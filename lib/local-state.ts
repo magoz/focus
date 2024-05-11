@@ -40,7 +40,7 @@ export const projectsAtom = atomWithStorage<Project[]>(
     {
       id: createId(),
       name: 'Project 2',
-      status: 'INACTIVE',
+      status: 'ACTIVE',
       focus: 20,
       color: pickRandomColor()
     },
