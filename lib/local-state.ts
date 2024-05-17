@@ -49,7 +49,7 @@ export const projectsAtom = atomWithStorage<Project[]>(
       name: 'Project 3',
       status: 'ACTIVE',
       focus: 30,
-      color: colors[2]
+      color: colors[8]
     },
     {
       id: '4',
@@ -57,6 +57,13 @@ export const projectsAtom = atomWithStorage<Project[]>(
       status: 'INACTIVE',
       focus: 10,
       color: colors[3]
+    },
+    {
+      id: '5',
+      name: 'Project 5',
+      status: 'INACTIVE',
+      focus: 10,
+      color: colors[4]
     }
   ],
   undefined,
@@ -67,15 +74,59 @@ export const focusPeriodsAtom = atomWithStorage<FocusPeriod[]>(
   'focus-periods',
   [
     {
-      periodStart: '2021-01-01',
+      periodStart: '2024-04-29',
+      periodEnd: '2024-05-06',
+      projects: [
+        {
+          projectId: '3',
+          focus: 90
+        },
+        {
+          projectId: '4',
+          focus: 10
+        }
+      ]
+    },
+    {
+      periodStart: '2024-05-06',
+      projects: [
+        {
+          projectId: '4',
+          focus: 60
+        },
+        {
+          projectId: '1',
+          focus: 10
+        },
+        {
+          projectId: '3',
+          focus: 30
+        }
+      ]
+    },
+    {
+      periodStart: '2024-05-13',
       projects: [
         {
           projectId: '1',
-          focus: 30
+          focus: 70
         },
         {
           projectId: '2',
-          focus: 70
+          focus: 30
+        }
+      ]
+    },
+    {
+      periodStart: '2024-05-20',
+      projects: [
+        {
+          projectId: '3',
+          focus: 50
+        },
+        {
+          projectId: '4',
+          focus: 50
         }
       ]
     }
