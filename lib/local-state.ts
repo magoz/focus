@@ -25,7 +25,7 @@ const pickRandom = <T>(array: T[]): T => {
   return randomItem
 }
 
-const pickRandomColor = () => pickRandom(colors)
+export const pickRandomColor = () => pickRandom(colors)
 
 export const projectsAtom = atomWithStorage<Project[]>(
   'projects',
