@@ -1,7 +1,9 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { projectsAtom } from '@/lib/local-state'
 import { useAtom } from 'jotai'
+import { CrossIcon, XIcon } from 'lucide-react'
 import { Fragment, useEffect, useRef } from 'react'
 import {
   ImperativePanelGroupHandle,
@@ -98,6 +100,18 @@ export const ActiveFocus = () => {
   //   } satisfies PanelGroupStorage
   // }, [setProjects])
 
+  const toggleProject = (id: string) => {
+    setProjects(prev => {
+      return prev.map(project => {
+        if (project.id !== id) return project
+        return {
+          ...project,
+          status: project.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+        }
+      })
+    })
+  }
+
   return (
     <section className="flex flex-col gap-4 w-full">
       <h3 className="text-2xl font-bold">Active</h3>
@@ -128,6 +142,14 @@ export const ActiveFocus = () => {
                   <span className="absolute bottom-1 right-1 text-xs font-bold text-white/50 select-none pointer-events-none">
                     {focus.toFixed(0)}
                   </span>
+                  <Button
+                    className="absolute top-1 left-1 hover:bg-transparent"
+                    variant="ghost"
+                    onClick={() => toggleProject(id)}
+                  >
+                    <XIcon className="w-4 text-white" />
+                  </Button>
+                  <span></span>
                 </Panel>
                 {index !== arr.length - 1 && <PanelResizeHandle className="w-2" />}
               </Fragment>

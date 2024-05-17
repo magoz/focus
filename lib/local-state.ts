@@ -34,26 +34,52 @@ export const projectsAtom = atomWithStorage<Project[]>(
       id: '1',
       name: 'Project 1',
       status: 'ACTIVE',
-      focus: 50,
+      focus: 30,
       color: colors[0]
     },
     {
       id: '2',
       name: 'Project 2',
       status: 'ACTIVE',
-      focus: 20,
+      focus: 30,
       color: colors[1]
     },
     {
       id: '3',
       name: 'Project 3',
       status: 'ACTIVE',
-      focus: 50,
+      focus: 30,
       color: colors[2]
+    },
+    {
+      id: '4',
+      name: 'Project 4',
+      status: 'INACTIVE',
+      focus: 10,
+      color: colors[3]
     }
   ],
   undefined,
-  {
-    getOnInit: true
-  }
+  { getOnInit: true }
+)
+
+export const focusPeriodsAtom = atomWithStorage<FocusPeriod[]>(
+  'focus-periods',
+  [
+    {
+      periodStart: '2021-01-01',
+      projects: [
+        {
+          projectId: '1',
+          focus: 30
+        },
+        {
+          projectId: '2',
+          focus: 70
+        }
+      ]
+    }
+  ],
+  undefined,
+  { getOnInit: true }
 )
