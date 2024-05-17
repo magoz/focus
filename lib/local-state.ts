@@ -31,25 +31,25 @@ export const projectsAtom = atomWithStorage<Project[]>(
   'projects',
   [
     {
-      id: createId(),
+      id: '1',
       name: 'Project 1',
       status: 'ACTIVE',
       focus: 50,
-      color: pickRandomColor()
+      color: colors[0]
     },
     {
-      id: createId(),
+      id: '2',
       name: 'Project 2',
       status: 'ACTIVE',
       focus: 20,
-      color: pickRandomColor()
+      color: colors[1]
     },
     {
-      id: createId(),
+      id: '3',
       name: 'Project 3',
       status: 'ACTIVE',
       focus: 50,
-      color: pickRandomColor()
+      color: colors[2]
     }
   ],
   undefined,
