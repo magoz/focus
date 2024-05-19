@@ -1,11 +1,15 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { focusPeriodsAtom, projectsAtom } from '@/lib/local-state'
 import { useAtom } from 'jotai'
+import { ArchiveIcon, TargetIcon } from 'lucide-react'
 
 export const ProjectList = () => {
-  const [projects] = useAtom(projectsAtom)
+  const [projects, setProjects] = useAtom(projectsAtom)
   const [, setFocusPeriods] = useAtom(focusPeriodsAtom)
+
+  const activeProjects = projects.filter(project => !project.isArchived)
 
   const addProjectToFocusPeriod = (projectId: string) => {
     setFocusPeriods(prev => {
@@ -26,17 +30,33 @@ export const ProjectList = () => {
     })
   }
 
+  const archiveProject = (id: string) => {
+    setProjects(prev => {
+      return prev.map(project => {
+        return project.id === id ? { ...project, isArchived: true } : project
+      })
+    })
+  }
+
   return (
     <div className="flex flex-col gap-4">
-      {projects.map(({ id, color, name }) => {
+      {activeProjects.map(({ id, color, name }) => {
         return (
           <div
             key={id}
-            className="flex w-full h-16 rounded-xl items-center justify-center cursor-pointer"
+            className="relative flex w-full h-16 rounded-xl items-center justify-center cursor-pointer"
             style={{ backgroundColor: color }}
-            onClick={() => addProjectToFocusPeriod(id)}
           >
-            <span className="font-bold text-white select-none pointer-events-none">{name}</span>
+            <span className="font-bold select-none pointer-events-none">{name}</span>
+            <div className="absolute top-1 right-2 flex gap-2">
+              <Button variant="link" onClick={() => addProjectToFocusPeriod(id)} className="p-0">
+                <TargetIcon className="w-4 h-4" />
+              </Button>
+
+              <Button variant="link" onClick={() => archiveProject(id)} className="p-0">
+                <ArchiveIcon className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         )
       })}

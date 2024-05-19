@@ -1,13 +1,11 @@
-type Project = {
+export type Project = {
   id: string
   name: string
-  status: 'ACTIVE' | 'INACTIVE' | 'ARCHIVED' // TODO: remove
-  focus: number // 0-100 // TODO: remove
   isArchived?: boolean
   color: string
 }
 
-type FocusPeriod = {
+export type FocusPeriod = {
   periodStart: string
   periodEnd?: string
   projects: {

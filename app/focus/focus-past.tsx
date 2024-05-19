@@ -1,24 +1,25 @@
 import { focusPeriodsAtom, projectsAtom } from '@/lib/local-state'
+import { FocusPeriod as FocusPeriodType, Project as ProjectType } from '@/lib/types'
 import { useAtom } from 'jotai'
 
 const Project = ({
   focus,
   color,
   name
-}: Pick<Project & FocusPeriod['projects'][0], 'focus' | 'color' | 'name'>) => {
+}: Pick<ProjectType & FocusPeriodType['projects'][0], 'focus' | 'color' | 'name'>) => {
   return (
     <div
       className="relative flex h-8 rounded-md items-center justify-center"
       style={{ width: `${focus}%`, backgroundColor: color }}
     >
-      <span className="text-xs font-bold text-white/50 select-none pointer-events-none">
+      <span className="text-xs font-bold text-foreground/50 select-none pointer-events-none">
         {name}
       </span>
     </div>
   )
 }
 
-const FocusPeriod = ({ period }: { period: FocusPeriod }) => {
+const FocusPeriod = ({ period }: { period: FocusPeriodType }) => {
   const [projects] = useAtom(projectsAtom)
   return (
     <div className="flex flex-col gap-1">
@@ -39,7 +40,7 @@ const FocusPeriod = ({ period }: { period: FocusPeriod }) => {
   )
 }
 
-const getProject = (id: string, projects: Project[]) => {
+const getProject = (id: string, projects: ProjectType[]) => {
   const project = projects.find(p => p.id === id)
   if (!project) throw new Error(`Project with id ${id} not found`)
   return project
