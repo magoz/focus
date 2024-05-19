@@ -33,7 +33,7 @@ const FocusPeriod = ({ period }: { period: FocusPeriodType }) => {
           })}
       </div>
 
-      <div className="text-sm font-bold">
+      <div className="text-sm font-bold text-slate-500">
         {period?.periodStart} {period?.periodEnd}
       </div>
     </div>

@@ -86,7 +86,7 @@ export const ActiveProjects = () => {
                 <Panel
                   key={id}
                   id={id}
-                  // defaultSize={focus}
+                  defaultSize={focus}
                   minSize={10}
                   className="relative flex h-16 rounded-xl items-center justify-center"
                   style={{ backgroundColor: color }}
