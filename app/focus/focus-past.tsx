@@ -1,7 +1,10 @@
 import { focusPeriodsAtom, projectsAtom } from '@/lib/local-state'
-import { FocusPeriod as FocusPeriodType, Project as ProjectType } from '@/lib/types'
+import {
+  FocusPeriod as FocusPeriodType,
+  Project as ProjectType,
+  isPastFocusPeriod
+} from '@/lib/types'
 import { formatDate } from '@/lib/utils'
-import { isPast } from 'date-fns'
 import { useAtom } from 'jotai'
 
 const Project = ({
@@ -51,7 +54,7 @@ const getProject = (id: string, projects: ProjectType[]) => {
 export const PastFocus = () => {
   const [focusPeriods] = useAtom(focusPeriodsAtom)
   const pastFocus = focusPeriods
-    .filter(period => period.periodEnd && isPast(new Date(period.periodEnd)))
+    .filter(isPastFocusPeriod)
     .toSorted((a, b) => b.periodStart.localeCompare(a.periodStart))
 
   return (
@@ -59,8 +62,8 @@ export const PastFocus = () => {
       <h3 className="text-4xl font-bold mb-6 select-none">Past Focus</h3>
 
       <div className="flex flex-col gap-4 w-full">
-        {pastFocus.map((period, index) => {
-          return <FocusPeriod key={index} period={period} />
+        {pastFocus.map(period => {
+          return <FocusPeriod key={period.id} period={period} />
         })}
       </div>
     </section>

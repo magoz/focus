@@ -57,6 +57,7 @@ export const defaultProjects = [
 
 export const defaultFocusPeriods = [
   {
+    id: '1',
     periodStart: '2024-04-29',
     periodEnd: '2024-05-06',
     projects: [
@@ -71,6 +72,7 @@ export const defaultFocusPeriods = [
     ]
   },
   {
+    id: '2',
     periodStart: '2024-05-06',
     projects: [
       {
@@ -88,6 +90,7 @@ export const defaultFocusPeriods = [
     ]
   },
   {
+    id: '3',
     periodStart: '2024-05-13',
     projects: [
       {
@@ -101,6 +104,7 @@ export const defaultFocusPeriods = [
     ]
   },
   {
+    id: '4',
     periodStart: '2024-05-20',
     projects: [
       {

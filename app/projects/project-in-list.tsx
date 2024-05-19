@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import { projectsAtom, focusPeriodsAtom } from '@/lib/local-state'
 import { Edit3Icon, ArchiveIcon, ArchiveRestoreIcon, Trash2Icon, EllipsisIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Project } from '@/lib/types'
+import { Project, isActiveFocusPeriod } from '@/lib/types'
 import { Input } from '@/components/ui/input'
 import {
   DropdownMenu,
@@ -16,6 +16,7 @@ import ColorPicker, { themes } from 'react-pick-color'
 import { Popover, PopoverContent } from '@/components/ui/popover'
 import { PopoverAnchor } from '@radix-ui/react-popover'
 import { colors } from '@/lib/defaults'
+import { isFuture } from 'date-fns'
 
 type Props = {
   project: Project
@@ -24,7 +25,7 @@ type Props = {
 export const ProjectInList = ({ project }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [, setProjects] = useAtom(projectsAtom)
-  const [, setFocusPeriods] = useAtom(focusPeriodsAtom)
+  const [focusPeriods, setFocusPeriods] = useAtom(focusPeriodsAtom)
   const [isRenaming, setIsRenaming] = useState(false)
   const [isRecoloring, setIsRecoloring] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
@@ -73,9 +74,12 @@ export const ProjectInList = ({ project }: Props) => {
   }
 
   const addProjectToFocusPeriod = () => {
+    const activePeriod = focusPeriods.filter(isActiveFocusPeriod).at(-1)
+    if (!activePeriod) return
+
     setFocusPeriods(prev => {
-      return prev.map((period, index) => {
-        if (index !== prev.length - 1) return period // Not the current period
+      return prev.map(period => {
+        if (activePeriod.id !== period.id) return period // Not the current period
         if (period.projects.find(project => project.projectId === id)) return period // already added
         return {
           ...period,

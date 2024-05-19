@@ -4,27 +4,22 @@ import { FocusPeriodWithProjects } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
 import { useAtom } from 'jotai'
 import { XIcon } from 'lucide-react'
-import { Fragment, useEffect, useRef } from 'react'
-import {
-  PanelGroup,
-  Panel,
-  PanelResizeHandle,
-  ImperativePanelGroupHandle
-} from 'react-resizable-panels'
+import { Fragment } from 'react'
+import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels'
+import { FocusPeriodActions } from './period-actions'
 
 type Props = {
   focusPeriodProjects: FocusPeriodWithProjects
 }
 
 export const FocusActive = ({ focusPeriodProjects }: Props) => {
-  const { projects, periodStart, periodEnd } = focusPeriodProjects
+  const { id, projects, periodStart, periodEnd } = focusPeriodProjects
   const [, setFocusPeriods] = useAtom(focusPeriodsAtom)
-  const ref = useRef<ImperativePanelGroupHandle>(null)
 
   const setActiveProjectsFocus = (values: number[]) => {
     setFocusPeriods(prev => {
-      return prev.map((period, index) => {
-        if (index !== prev.length - 1) return period // Not the current period
+      return prev.map(period => {
+        if (period.id !== id) return period
         return {
           ...period,
           projects: period.projects.map((project, i) => {
@@ -38,23 +33,13 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
     })
   }
 
-  const sizes = projects.map(p => p.focus)
-  const setGroupSizes = () => {
-    if (ref.current) {
-      ref.current.setLayout(sizes)
-    }
-  }
-  useEffect(() => {
-    setGroupSizes()
-  }, [])
-
-  const removeActiveProject = (id: string) => {
+  const removeActiveProject = (projectId: string) => {
     setFocusPeriods(prev => {
-      return prev.map((period, index) => {
-        if (index !== prev.length - 1) return period // Not the current period
+      return prev.map(period => {
+        if (period.id !== id) return period
         return {
           ...period,
-          projects: period.projects.filter(p => p.projectId !== id)
+          projects: period.projects.filter(p => p.projectId !== projectId)
         }
       })
     })
@@ -62,16 +47,17 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
 
   return (
     <div>
-      <div className="mb-2 text-slate-500">
+      <div className="flex justify-between mb-2 text-slate-500">
         <span className="text-lg font-bold">
           {formatDate(periodStart)}
           {periodEnd && ` - ${formatDate(periodEnd)}`}
         </span>
+
+        <FocusPeriodActions focusPeriodWithProjects={focusPeriodProjects} />
       </div>
 
       <div className="w-full">
         <PanelGroup
-          ref={ref}
           direction="horizontal"
           onLayout={setActiveProjectsFocus}
           // autoSaveId="active-panels"
