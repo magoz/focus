@@ -30,10 +30,9 @@ export const ProjectInList = ({ project }: Props) => {
   const [showMenu, setShowMenu] = useState(false)
 
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-  const { id, color, name, isArchived, isDeleted } = project
+  const { id, color, name, isArchived } = project
 
   const toggleIsRenaming = (value?: boolean) => {
-    console.log('toggle!')
     setShowMenu(false)
     setIsRenaming(prev => (value !== undefined ? value : !prev))
     setTimeout(() => {
@@ -42,16 +41,13 @@ export const ProjectInList = ({ project }: Props) => {
         inputRef.current.select()
       }
     }, 150) // wait for the dropdownmenu to handle focus. Not ideal. Should be a better way
-    console.log(document.activeElement)
   }
 
   const openRecoloring = () => {
     setShowMenu(false)
     setTimeout(() => {
-      console.log(document.activeElement)
       setIsRecoloring(true)
     }, 200) // wait for the dropdownmenu to handle focus. Not ideal. Should be a better way
-    console.log(document.activeElement)
   }
 
   // useEffect(() => {
@@ -111,10 +107,6 @@ export const ProjectInList = ({ project }: Props) => {
     })
   }
 
-  if (isRecoloring) {
-    console.log('isrecoloring', isRecoloring)
-  }
-
   return (
     <div>
       <div
@@ -122,15 +114,6 @@ export const ProjectInList = ({ project }: Props) => {
         className="relative flex w-full h-16 rounded-xl items-center justify-center cursor-pointer"
         style={{ backgroundColor: color }}
       >
-        {/* <Input */}
-        {/*   ref={inputRef} */}
-        {/*   disabled={!isRenaming} */}
-        {/*   value={name} */}
-        {/*   onBlur={() => toggleIsRenaming(false)} */}
-        {/*   onChange={e => rename(e.currentTarget.value)} */}
-        {/*   className="flex h-auto text-center font-bold text-base bg-transparent border-none active:border-none focus:border-none" */}
-        {/* /> */}
-
         <div className="w-full h-full">
           {isRenaming ? (
             <Input
