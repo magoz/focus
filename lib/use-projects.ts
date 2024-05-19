@@ -1,8 +1,27 @@
 import { useCallback, useState } from 'react'
 import { defaultProjects, defaultFocusPeriods } from './defaults'
-import { Project, FocusPeriod } from './types'
+import { Project, FocusPeriod, FocusPeriodFullProject, FocusPeriodWithProjects } from './types'
 import { useAtom } from 'jotai'
 import { projectsAtom } from './local-state'
+
+export const getFocusPeriodFullProjects = (
+  projects: Project[],
+  focusPeriod: FocusPeriod
+): FocusPeriodWithProjects => {
+  const activeProjects = focusPeriod.projects.map(project => {
+    const existingProject = projects.find(p => p.id === project.projectId)
+    if (!existingProject) throw new Error(`Project with id ${project.projectId} not found`)
+    return {
+      ...existingProject,
+      focus: project.focus
+    } satisfies FocusPeriodFullProject
+  })
+
+  return {
+    ...focusPeriod,
+    projects: activeProjects
+  }
+}
 
 export const useEditProject = () => {
   const [, setProjects] = useAtom(projectsAtom)

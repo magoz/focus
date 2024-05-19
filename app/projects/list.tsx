@@ -28,7 +28,7 @@ export const ProjectList = () => {
 
   return (
     <section>
-      <div className="flex gap-4 items-center mb-4">
+      <div className="flex gap-4 items-center mb-4 select-none">
         <h3 className="text-2xl font-bold">Projects</h3>
         <Button variant="link" onClick={addProject} className="p-0">
           <PlusIcon className="w-4 h-4" />

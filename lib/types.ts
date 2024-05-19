@@ -14,3 +14,11 @@ export type FocusPeriod = {
     focus: number // 0-100
   }[]
 }
+
+export type FocusPeriodFullProject = Project & {
+  focus: number // 0-100
+}
+
+export type FocusPeriodWithProjects = Omit<FocusPeriod, 'projects'> & {
+  projects: FocusPeriodFullProject[]
+}

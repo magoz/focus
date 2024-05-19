@@ -1,6 +1,5 @@
 'use client'
 
-import { AddProject } from '../projects/add'
 import { ArchivedProjects } from '../projects/archived'
 import { ProjectList } from '../projects/list'
 import { ActiveProjects } from './active-projects'
@@ -14,16 +13,12 @@ export const Focus = () => {
   return (
     <ClientOnly>
       <main className="w-screen grid grid-cols-[3fr,1fr] gap-16 p-16">
-        <section className="flex flex-col gap-12">
+        <section className="flex flex-col gap-16">
           <ActiveProjects />
           <PastFocus />
         </section>
-        <section className="col-start-2 flex flex-col gap-4">
+        <section className="col-start-2 flex flex-col gap-12">
           <ProjectList />
-          {/* <AddProject /> */}
-        </section>
-        <section className="col-start-2 flex flex-col gap-4">
-          <h3 className="text-2xl font-bold mb-4">Archived</h3>
           <ArchivedProjects />
         </section>
       </main>
