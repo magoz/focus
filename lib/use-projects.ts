@@ -1,6 +1,22 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { defaultProjects, defaultFocusPeriods } from './defaults'
 import { Project, FocusPeriod } from './types'
+import { useAtom } from 'jotai'
+import { projectsAtom } from './local-state'
+
+export const useEditProject = () => {
+  const [, setProjects] = useAtom(projectsAtom)
+  const editProject = useCallback(
+    (updatedProject: Project) => {
+      setProjects(projects =>
+        projects.map(project => (project.id === updatedProject.id ? updatedProject : project))
+      )
+    },
+    [setProjects]
+  )
+
+  return { editProject }
+}
 
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>(defaultProjects)
