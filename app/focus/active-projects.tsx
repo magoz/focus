@@ -70,7 +70,12 @@ export const ActiveProjects = () => {
 
   return (
     <section className="flex flex-col gap-4 w-full">
-      <h3 className="text-2xl font-bold">Active</h3>
+      <h3 className="flex gap-4 items-baseline text-2xl font-bold">
+        Active
+        <span className="text-lg text-slate-600">
+          {currentPeriod?.periodStart} {currentPeriod?.periodEnd}
+        </span>
+      </h3>
 
       <div className="w-full">
         <PanelGroup
@@ -111,10 +116,6 @@ export const ActiveProjects = () => {
             )
           })}
         </PanelGroup>
-      </div>
-
-      <div className="font-bold">
-        {currentPeriod?.periodStart} {currentPeriod?.periodEnd}
       </div>
     </section>
   )

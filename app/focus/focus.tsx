@@ -14,7 +14,7 @@ export const Focus = () => {
   return (
     <ClientOnly>
       <main className="w-screen grid grid-cols-[3fr,1fr] gap-16 p-16">
-        <section className="flex flex-col gap-8">
+        <section className="flex flex-col gap-12">
           <ActiveProjects />
           <PastFocus />
         </section>
