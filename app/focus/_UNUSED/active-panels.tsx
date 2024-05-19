@@ -1,9 +1,9 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { projectsAtom } from '@/lib/local-state'
+import { focusPeriodsAtom, projectsAtom } from '@/lib/local-state'
 import { useAtom } from 'jotai'
-import { CrossIcon, XIcon } from 'lucide-react'
+import { XIcon } from 'lucide-react'
 import { Fragment, useEffect, useRef } from 'react'
 import {
   ImperativePanelGroupHandle,
@@ -13,32 +13,34 @@ import {
 } from 'react-resizable-panels'
 
 export const ActiveFocus = () => {
-  const [projects, setProjects] = useAtom(projectsAtom)
+  const [projects] = useAtom(projectsAtom)
+  const [focusPeriods, setFocusPeriods] = useAtom(focusPeriodsAtom)
   const ref = useRef<ImperativePanelGroupHandle>(null)
 
-  console.log('projects', projects)
-
-  const activeProjects = projects.filter(project => project.status === 'ACTIVE')
-
-  const setSizes = (values: number[]) => {
-    setProjects(prev => {
-      return prev.map((project, index) => {
-        if (project.status !== 'ACTIVE') return project
+  const currentPeriod = focusPeriods.at(-1)
+  const activeProjects = currentPeriod
+    ? currentPeriod.projects.map(activeProject => {
+        const project = projects.find(p => p.id === activeProject.projectId)
+        if (!project) throw new Error(`Project with id ${activeProject.projectId} not found`)
         return {
           ...project,
-          focus: values[index]
+          focus: activeProject.focus
         }
       })
-    })
-  }
+    : []
 
-  const setItemSize = (id: string, value: number) => {
-    setProjects(prev => {
-      return prev.map(project => {
-        if (project.id !== id) return project
+  const setActiveProjectsFocus = (values: number[]) => {
+    setFocusPeriods(prev => {
+      return prev.map((period, index) => {
+        if (index !== prev.length - 1) return period // Not the current period
         return {
-          ...project,
-          focus: value
+          ...period,
+          projects: period.projects.map((project, i) => {
+            return {
+              ...project,
+              focus: values[i]
+            }
+          })
         }
       })
     })
@@ -100,13 +102,13 @@ export const ActiveFocus = () => {
   //   } satisfies PanelGroupStorage
   // }, [setProjects])
 
-  const toggleProject = (id: string) => {
-    setProjects(prev => {
-      return prev.map(project => {
-        if (project.id !== id) return project
+  const removeActiveProject = (id: string) => {
+    setFocusPeriods(prev => {
+      return prev.map((period, index) => {
+        if (index !== prev.length - 1) return period // Not the current period
         return {
-          ...project,
-          status: project.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+          ...period,
+          projects: period.projects.filter(p => p.projectId !== id)
         }
       })
     })
@@ -120,7 +122,7 @@ export const ActiveFocus = () => {
         <PanelGroup
           ref={ref}
           direction="horizontal"
-          onLayout={setSizes}
+          onLayout={setActiveProjectsFocus}
           // autoSaveId="active-panels"
           // storage={panelGroupStorage}
         >
@@ -145,7 +147,7 @@ export const ActiveFocus = () => {
                   <Button
                     className="absolute top-1 left-1 hover:bg-transparent"
                     variant="ghost"
-                    onClick={() => toggleProject(id)}
+                    onClick={() => removeActiveProject(id)}
                   >
                     <XIcon className="w-4 text-white" />
                   </Button>

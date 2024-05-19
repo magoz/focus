@@ -1,6 +1,6 @@
 'use client'
 
-import { projectsAtom } from '@/lib/local-state'
+import { focusPeriodsAtom, projectsAtom } from '@/lib/local-state'
 import { useAtom } from 'jotai'
 import { PointerEvent, useState } from 'react'
 
@@ -23,32 +23,47 @@ const calculateDraggingProjectFocus = (e: PointerEvent<HTMLDivElement>) => {
 
 export const Active = () => {
   const [projects, setProjects] = useAtom(projectsAtom)
+  const [focusPeriods, setFocusPeriods] = useAtom(focusPeriodsAtom)
   const [draggingProjectId, setDraggingProjectId] = useState<string | null>(null)
 
-  const activeProjects = projects.filter(project => project.status === 'ACTIVE')
-
-  const updateProjectFocus = (newFocus: number) => {
-    setProjects(prev => {
-      if (!draggingProjectId === null) return prev
-
-      const draggingProject = prev.find(project => project.id === draggingProjectId)
-      if (!draggingProject) return prev
-
-      const activeNonDraggedProjects = prev.filter(
-        project => project.status === 'ACTIVE' && project.id !== draggingProjectId
-      )
-      const delta = newFocus - draggingProject.focus
-      const deltaPerNonDraggedProject =
-        activeNonDraggedProjects.length === 0 ? 0 : delta / activeNonDraggedProjects.length
-
-      return prev.map(project => {
+  const currentPeriod = focusPeriods.at(-1)
+  const activeProjects = currentPeriod
+    ? currentPeriod.projects.map(activeProject => {
+        const project = projects.find(p => p.id === activeProject.projectId)
+        if (!project) throw new Error(`Project with id ${activeProject.projectId} not found`)
         return {
           ...project,
-          focus:
-            project.id === draggingProjectId ? newFocus : project.focus - deltaPerNonDraggedProject
+          focus: activeProject.focus
         }
       })
-    })
+    : []
+
+  const updateProjectFocus = (newFocus: number) => {
+    return null
+    // TODO: fix
+    // setFocusPeriods(prev => {
+    //   return prev.map((period, index) => {
+    //     if (index !== prev.length - 1) return period // Not the current period
+    //
+    //     if (!draggingProjectId === null) return prev
+    //
+    //     const draggingProject = prev.find(project => project.id === draggingProjectId)
+    //     if (!draggingProject) return prev
+    //
+    //     const activeNonDraggedProjects = prev.filter(
+    //       project => project.status === 'ACTIVE' && project.id !== draggingProjectId
+    //     )
+    //     const delta = newFocus - draggingProject.focus
+    //     const deltaPerNonDraggedProject =
+    //       activeNonDraggedProjects.length === 0 ? 0 : delta / activeNonDraggedProjects.length
+    //
+    //     return {
+    //       ...period,
+    //       focus:
+    //         period.id === draggingProjectId ? newFocus : period.focus - deltaPerNonDraggedProject
+    //     }
+    //   })
+    // })
   }
 
   return (
