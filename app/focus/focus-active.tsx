@@ -8,6 +8,7 @@ import { DateRange } from 'react-day-picker'
 import { ProjectsPopover } from './projects-popover'
 import { useHover } from '@uidotdev/usehooks'
 import { CheckIcon, XIcon } from 'lucide-react'
+import { createId } from '@paralleldrive/cuid2'
 
 const Project = ({
   project,
@@ -103,8 +104,41 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
     })
   }
 
+  const addFocusPeriod = () => {
+    setFocusPeriods(prev => {
+      return [
+        ...prev,
+        {
+          id: createId(),
+          periodStart: new Date().toISOString(),
+          projects: []
+        }
+      ]
+    })
+  }
+
+  const completeActiveFocus = () => {
+    setFocusPeriods(prev => {
+      return [
+        ...prev.map(period => {
+          if (period.id !== id) return period
+          return {
+            ...period,
+            isActive: false
+          }
+        }),
+        {
+          id: createId(),
+          isActive: true,
+          periodStart: new Date().toISOString(),
+          projects: []
+        }
+      ]
+    })
+  }
+
   return (
-    <div className="mt-16">
+    <div>
       <div className="w-full">
         <PanelGroup
           direction="horizontal"
@@ -118,10 +152,12 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
           })}
         </PanelGroup>
       </div>
-      <div className="flex gap-4 w-full justify-center mt-4">
-        <Button variant="outline" size="xl">
-          <CheckIcon className="w-4 h-4" />
-        </Button>
+      <div className="flex gap-4 w-full justify-center mt-8">
+        {projects.length > 0 && (
+          <Button variant="outline" size="xl" onClick={completeActiveFocus}>
+            <CheckIcon className="w-4 h-4" />
+          </Button>
+        )}
         <ProjectsPopover />
       </div>
     </div>
