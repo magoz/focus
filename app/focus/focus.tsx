@@ -12,15 +12,15 @@ import { ClientOnly } from '@/lib/client-only'
 export const Focus = () => {
   return (
     <ClientOnly>
-      <main className="w-screen grid grid-cols-[3fr,1fr] gap-16 p-16">
-        <section className="flex flex-col gap-16">
+      <main className="w-screen p-32">
+        <section className="flex flex-col gap-32">
           <ActiveProjects />
           <PastFocus />
         </section>
-        <section className="col-start-2 flex flex-col gap-12">
-          <ProjectList />
-          <ArchivedProjects />
-        </section>
+        {/* <section className="col-start-2 flex flex-col gap-12"> */}
+        {/*   <ProjectList /> */}
+        {/*   <ArchivedProjects /> */}
+        {/* </section> */}
       </main>
     </ClientOnly>
   )

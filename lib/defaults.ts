@@ -58,8 +58,8 @@ export const defaultProjects = [
 export const defaultFocusPeriods = [
   {
     id: '1',
+    isActive: true,
     periodStart: '2024-04-29',
-    periodEnd: '2024-05-06',
     projects: [
       {
         projectId: '3',

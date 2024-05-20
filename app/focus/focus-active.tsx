@@ -1,21 +1,76 @@
 import { Button } from '@/components/ui/button'
 import { focusPeriodsAtom } from '@/lib/local-state'
-import { FocusPeriodWithProjects } from '@/lib/types'
-import { formatDate } from '@/lib/utils'
+import { FocusPeriodFullProject, FocusPeriodWithProjects } from '@/lib/types'
 import { useAtom } from 'jotai'
-import { XIcon } from 'lucide-react'
-import { Fragment } from 'react'
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels'
 import { FocusPeriodActions } from './period-actions'
-import { FocusPeriodDatePicker } from './period-date-picker'
 import { DateRange } from 'react-day-picker'
+import { ProjectsPopover } from './projects-popover'
+import { useHover } from '@uidotdev/usehooks'
+import { CheckIcon, XIcon } from 'lucide-react'
+
+const Project = ({
+  project,
+  isLast,
+  periodId
+}: {
+  project: FocusPeriodFullProject
+  isLast: boolean
+  periodId: string
+}) => {
+  const [, setFocusPeriods] = useAtom(focusPeriodsAtom)
+  const { id, name, focus, color } = project
+  const [ref, hovering] = useHover()
+
+  const removeActiveProject = () => {
+    setFocusPeriods(prev => {
+      return prev.map(period => {
+        if (period.id !== periodId) return period
+        return {
+          ...period,
+          projects: period.projects.filter(p => p.projectId !== id)
+        }
+      })
+    })
+  }
+
+  return (
+    <>
+      <Panel
+        key={id}
+        id={id}
+        defaultSize={focus}
+        minSize={10}
+        className="relative flex h-12 first:rounded-tl-full first:rounded-bl-full last:rounded-tr-full last:rounded-br-full items-center justify-center"
+        style={{ backgroundColor: color }}
+      >
+        <Button
+          ref={ref}
+          variant="icon"
+          onClick={removeActiveProject}
+          className="flex gap-2 select-none text-foreground font-bold"
+        >
+          {hovering ? (
+            <XIcon className="w-40 h-4" />
+          ) : (
+            <>
+              <span>{name}</span>
+              <span className="opacity-50">{focus.toFixed(0)}</span>
+            </>
+          )}
+        </Button>
+      </Panel>
+      {!isLast && <PanelResizeHandle className="w-0" />}
+    </>
+  )
+}
 
 type Props = {
   focusPeriodProjects: FocusPeriodWithProjects
 }
 
 export const FocusActive = ({ focusPeriodProjects }: Props) => {
-  const { id, projects, periodStart, periodEnd } = focusPeriodProjects
+  const { id, projects } = focusPeriodProjects
   const [, setFocusPeriods] = useAtom(focusPeriodsAtom)
 
   const setActiveProjectsFocus = (values: number[]) => {
@@ -35,20 +90,7 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
     })
   }
 
-  const removeActiveProject = (projectId: string) => {
-    setFocusPeriods(prev => {
-      return prev.map(period => {
-        if (period.id !== id) return period
-        return {
-          ...period,
-          projects: period.projects.filter(p => p.projectId !== projectId)
-        }
-      })
-    })
-  }
-
   const updateDates = (dates: DateRange | undefined) => {
-    console.log('dates', dates)
     setFocusPeriods(prev => {
       return prev.map(period => {
         if (period.id !== id) return period
@@ -62,22 +104,7 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
   }
 
   return (
-    <div>
-      <div className="flex justify-between mb-2 text-slate-500">
-        <span className="text-lg font-bold">
-          {formatDate(periodStart)}
-          {periodEnd && ` - ${formatDate(periodEnd)}`}
-        </span>
-
-        {/* <FocusPeriodDatePicker */}
-        {/*   from={new Date(periodStart)} */}
-        {/*   to={periodEnd ? new Date(periodEnd) : undefined} */}
-        {/*   updateDates={updateDates} */}
-        {/* /> */}
-
-        <FocusPeriodActions focusPeriodWithProjects={focusPeriodProjects} />
-      </div>
-
+    <div className="mt-16">
       <div className="w-full">
         <PanelGroup
           direction="horizontal"
@@ -85,37 +112,17 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
           // autoSaveId="active-panels"
           // storage={panelGroupStorage}
         >
-          {projects.map(({ id, color, name, focus }, index, arr) => {
-            return (
-              <Fragment key={`group-${id}`}>
-                <Panel
-                  key={id}
-                  id={id}
-                  defaultSize={focus}
-                  minSize={10}
-                  className="relative flex h-16 rounded-xl items-center justify-center"
-                  style={{ backgroundColor: color }}
-                >
-                  <span className="font-bold text-white select-none pointer-events-none">
-                    {name}
-                  </span>
-                  <span className="absolute bottom-1 right-1 text-xs font-bold text-white/50 select-none pointer-events-none">
-                    {focus.toFixed(0)}
-                  </span>
-                  <Button
-                    className="absolute top-1 left-1 hover:bg-transparent"
-                    variant="ghost"
-                    onClick={() => removeActiveProject(id)}
-                  >
-                    <XIcon className="w-4 text-white" />
-                  </Button>
-                  <span></span>
-                </Panel>
-                {index !== arr.length - 1 && <PanelResizeHandle className="w-2" />}
-              </Fragment>
-            )
+          {projects.map((project, index, arr) => {
+            const isLast = index === arr.length - 1
+            return <Project key={project.id} project={project} isLast={isLast} periodId={id} />
           })}
         </PanelGroup>
+      </div>
+      <div className="flex gap-4 w-full justify-center mt-4">
+        <Button variant="outline" size="xl">
+          <CheckIcon className="w-4 h-4" />
+        </Button>
+        <ProjectsPopover />
       </div>
     </div>
   )

@@ -1,11 +1,14 @@
 import { focusPeriodsAtom, projectsAtom } from '@/lib/local-state'
 import {
   FocusPeriod as FocusPeriodType,
+  FocusPeriodWithProjects,
   Project as ProjectType,
   isPastFocusPeriod
 } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
 import { useAtom } from 'jotai'
+import { FocusPeriodActions } from './period-actions'
+import { getFocusPeriodFullProjects } from '@/lib/use-projects'
 
 const Project = ({
   focus,
@@ -14,28 +17,28 @@ const Project = ({
 }: Pick<ProjectType & FocusPeriodType['projects'][0], 'focus' | 'color' | 'name'>) => {
   return (
     <div
-      className="relative flex h-8 rounded-[10px] items-center justify-center"
+      className="relative flex gap-1 h-6 first:rounded-tl-full first:rounded-bl-full last:rounded-tr-full last:rounded-br-full items-center justify-center text-xs font-bold text-foreground select-none pointer-events-none"
       style={{ width: `${focus}%`, backgroundColor: color }}
     >
-      <span className="text-xs font-bold text-foreground select-none pointer-events-none">
-        {name}
-      </span>
+      {name}
+      <span className="opacity-50">{focus.toFixed(0)}</span>
     </div>
   )
 }
 
-const FocusPeriod = ({ period }: { period: FocusPeriodType }) => {
+const FocusPeriod = ({ period }: { period: FocusPeriodWithProjects }) => {
   const [projects] = useAtom(projectsAtom)
   return (
     <div className="flex flex-col gap-1">
-      <div className="text-sm font-bold text-slate-500">
+      <div className="flex justify-between text-sm font-bold text-slate-500">
         {formatDate(period.periodStart)} - {period.periodEnd && formatDate(period.periodEnd)}
+        <FocusPeriodActions focusPeriodWithProjects={period} />
       </div>
 
-      <div className="flex w-full gap-1.5">
+      <div className="flex w-full">
         {period &&
           period.projects.map(p => {
-            const project = getProject(p.projectId, projects)
+            const project = getProject(p.id, projects)
             return (
               <Project key={project.id} focus={p.focus} color={project.color} name={project.name} />
             )
@@ -53,17 +56,19 @@ const getProject = (id: string, projects: ProjectType[]) => {
 
 export const PastFocus = () => {
   const [focusPeriods] = useAtom(focusPeriodsAtom)
+  const [projects] = useAtom(projectsAtom)
   const pastFocus = focusPeriods
     .filter(isPastFocusPeriod)
     .toSorted((a, b) => b.periodStart.localeCompare(a.periodStart))
 
   return (
     <section className="">
-      <h3 className="text-4xl font-bold mb-6 select-none">Past Focus</h3>
+      <h3 className="text-3xl font-bold mb-6 text-center select-none">Past Focus</h3>
 
       <div className="flex flex-col gap-4 w-full">
         {pastFocus.map(period => {
-          return <FocusPeriod key={period.id} period={period} />
+          const periodWithFullProjects = getFocusPeriodFullProjects(projects, period)
+          return <FocusPeriod key={period.id} period={periodWithFullProjects} />
         })}
       </div>
     </section>
