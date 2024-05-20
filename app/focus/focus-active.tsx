@@ -7,6 +7,8 @@ import { XIcon } from 'lucide-react'
 import { Fragment } from 'react'
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels'
 import { FocusPeriodActions } from './period-actions'
+import { FocusPeriodDatePicker } from './period-date-picker'
+import { DateRange } from 'react-day-picker'
 
 type Props = {
   focusPeriodProjects: FocusPeriodWithProjects
@@ -45,6 +47,20 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
     })
   }
 
+  const updateDates = (dates: DateRange | undefined) => {
+    console.log('dates', dates)
+    setFocusPeriods(prev => {
+      return prev.map(period => {
+        if (period.id !== id) return period
+        return {
+          ...period,
+          periodStart: dates?.from ? dates.from.toISOString() : '',
+          periodEnd: dates?.to ? dates.to.toISOString() : undefined
+        }
+      })
+    })
+  }
+
   return (
     <div>
       <div className="flex justify-between mb-2 text-slate-500">
@@ -52,6 +68,12 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
           {formatDate(periodStart)}
           {periodEnd && ` - ${formatDate(periodEnd)}`}
         </span>
+
+        {/* <FocusPeriodDatePicker */}
+        {/*   from={new Date(periodStart)} */}
+        {/*   to={periodEnd ? new Date(periodEnd) : undefined} */}
+        {/*   updateDates={updateDates} */}
+        {/* /> */}
 
         <FocusPeriodActions focusPeriodWithProjects={focusPeriodProjects} />
       </div>
