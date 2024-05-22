@@ -10,7 +10,7 @@ import { ClientOnly } from '@/lib/client-only'
 export const Focus = () => {
   return (
     <ClientOnly>
-      <main className="max-w-[900px] w-[80%] mx-auto ">
+      <main className="max-w-[900px] w-[80%] mx-auto mb-64">
         <section className="flex flex-col">
           <ActiveProjects />
           <PastFocus />
