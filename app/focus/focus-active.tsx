@@ -145,22 +145,9 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
     })
   }
 
-  // const isPeriodDaily = isSameDay(periodStart, periodEnd)
-  // const { periodStart: nextPeriodStart, periodEnd: nextPeriodEnd } = getNextFocusPeriod(periods)
-
   return (
     <div>
-      {/* <div className="flex justify-center text-lg font-bold text-slate-500 mb-8"> */}
-      {/*   {toDayString(periodStart)} */}
-      {/*   {!isPeriodDaily && ` - ${toDayString(periodEnd)}`} */}
-      {/* </div> */}
-
-      {/* <div className="flex justify-center text-lg font-bold text-slate-500 mb-8"> */}
-      {/*   {formatDay(nextPeriodStart)} */}
-      {/*   {!isPeriodDaily && ` - ${formatDay(nextPeriodEnd)}`} */}
-      {/* </div> */}
-
-      <div className="flex justify-center text-lg font-bold text-slate-500 mb-8">
+      <div className="flex justify-center text-lg font-bold text-slate-500 mb-12">
         <FocusPeriodDatePicker
           from={new Date(periodStart)}
           to={new Date(periodEnd)}
