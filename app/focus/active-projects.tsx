@@ -9,6 +9,7 @@ import { isActiveFocusPeriod } from '@/lib/types'
 import { PlusIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { add } from 'date-fns'
+import { toDayString } from '@/lib/utils'
 
 export const ActiveProjects = () => {
   const [projects] = useAtom(projectsAtom)
@@ -22,8 +23,8 @@ export const ActiveProjects = () => {
         ...prev,
         {
           id: createId(),
-          periodStart: new Date().toISOString(),
-          periodEnd: add(new Date(), { days: 7 }).toISOString(),
+          periodStart: toDayString(new Date()),
+          periodEnd: toDayString(add(new Date(), { days: 7 })),
           projects: []
         }
       ]

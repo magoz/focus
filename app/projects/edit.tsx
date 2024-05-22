@@ -33,7 +33,6 @@ export const EditProject = ({ project }: Props) => {
   }
 
   const onEditName = (value: string) => {
-    console.log('value', value, value.length)
     setInputName(value)
     if (value === '') return
 

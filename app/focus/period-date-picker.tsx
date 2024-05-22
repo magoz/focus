@@ -1,9 +1,8 @@
 import * as React from 'react'
 import { isSameDay } from 'date-fns'
-import { Calendar as CalendarIcon } from 'lucide-react'
 import { DateRange } from 'react-day-picker'
 
-import { cn, formatDate } from '@/lib/utils'
+import { cn, formatDay } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -14,9 +13,6 @@ type Props = React.HTMLAttributes<HTMLDivElement> &
   }
 
 export const FocusPeriodDatePicker = ({ from, to, updateDates, className }: Props) => {
-  console.log('from', from)
-  console.log('to', to)
-
   const noDate = !from && !to
 
   return (
@@ -31,11 +27,11 @@ export const FocusPeriodDatePicker = ({ from, to, updateDates, className }: Prop
               noDate && 'text-muted-foreground'
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
             {from && to ? (
               <>
-                {formatDate(from)}
-                {!isSameDay(from, to) && ` - ${formatDate(to)}`}
+                {formatDay(from)}
+                {!isSameDay(from, to) && ` - ${formatDay(to)}`}
               </>
             ) : (
               <span>Pick a date</span>
@@ -49,7 +45,8 @@ export const FocusPeriodDatePicker = ({ from, to, updateDates, className }: Prop
             defaultMonth={from}
             selected={{ from, to }}
             onSelect={updateDates}
-            numberOfMonths={2}
+            weekStartsOn={1}
+            numberOfMonths={1}
           />
         </PopoverContent>
       </Popover>

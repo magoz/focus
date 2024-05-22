@@ -8,8 +8,8 @@ import { ProjectsPopover } from './projects-popover'
 import { useHover } from '@uidotdev/usehooks'
 import { CheckIcon, XIcon } from 'lucide-react'
 import { createId } from '@paralleldrive/cuid2'
-import { add, isSameDay } from 'date-fns'
-import { formatDate } from '@/lib/utils'
+import { add, isSameDay, startOfDay } from 'date-fns'
+import { formatDay, toDayString } from '@/lib/utils'
 import { getNextFocusPeriod } from './utils'
 import { FocusPeriodDatePicker } from './period-date-picker'
 
@@ -95,15 +95,14 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
   }
 
   const updateDates = (dates: DateRange | undefined) => {
-    console.log('dates', dates)
     setFocusPeriods(prev => {
       return prev.map(period => {
         if (period.id !== id) return period
-        const periodStart = dates?.from ? dates.from.toISOString() : new Date().toISOString()
+        const periodStart = dates?.from ? toDayString(dates.from) : toDayString(new Date())
         return {
           ...period,
           periodStart,
-          periodEnd: dates?.to ? dates.to.toISOString() : periodStart
+          periodEnd: dates?.to ? toDayString(dates.to) : periodStart
         }
       })
     })
@@ -116,8 +115,8 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
         {
           id: createId(),
           isActive: true,
-          periodStart: new Date().toISOString(),
-          periodEnd: add(new Date(), { days: 7 }).toISOString(),
+          periodStart: toDayString(new Date()),
+          periodEnd: toDayString(add(new Date(), { days: 7 })),
           projects: []
         }
       ]
@@ -138,22 +137,28 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
         {
           id: createId(),
           isActive: true,
-          periodStart: nextPeriodStart.toISOString(),
-          periodEnd: nextPeriodEnd.toISOString(),
+          periodStart: toDayString(nextPeriodStart),
+          periodEnd: toDayString(nextPeriodEnd),
           projects: []
         }
       ]
     })
   }
 
-  const isPeriodDaily = isSameDay(periodStart, periodEnd)
+  // const isPeriodDaily = isSameDay(periodStart, periodEnd)
+  // const { periodStart: nextPeriodStart, periodEnd: nextPeriodEnd } = getNextFocusPeriod(periods)
 
   return (
     <div>
-      <div className="flex justify-center text-lg font-bold text-slate-500 mb-8">
-        {formatDate(periodStart)}
-        {!isPeriodDaily && ` - ${formatDate(periodEnd)}`}
-      </div>
+      {/* <div className="flex justify-center text-lg font-bold text-slate-500 mb-8"> */}
+      {/*   {toDayString(periodStart)} */}
+      {/*   {!isPeriodDaily && ` - ${toDayString(periodEnd)}`} */}
+      {/* </div> */}
+
+      {/* <div className="flex justify-center text-lg font-bold text-slate-500 mb-8"> */}
+      {/*   {formatDay(nextPeriodStart)} */}
+      {/*   {!isPeriodDaily && ` - ${formatDay(nextPeriodEnd)}`} */}
+      {/* </div> */}
 
       <div className="flex justify-center text-lg font-bold text-slate-500 mb-8">
         <FocusPeriodDatePicker
@@ -162,7 +167,6 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
           updateDates={updateDates}
         />
       </div>
-
       <div className="flex w-full gap-4">
         {/* {projects.length > 0 && ( */}
         {/*   <Button */}
@@ -193,7 +197,6 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
 
         {/* <ProjectsPopover /> */}
       </div>
-
       <div className="flex gap-4 w-full justify-center mt-8">
         <ProjectsPopover />
         {projects.length > 0 && (

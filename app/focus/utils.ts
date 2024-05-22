@@ -13,7 +13,6 @@ export const getNextFocusPeriod = (periods: FocusPeriod[]) => {
   }
 
   const duration = differenceInDays(lastFocus.periodEnd, lastFocus.periodStart)
-  console.log('duration', duration)
 
   // TODO: extract day of the week start period
 

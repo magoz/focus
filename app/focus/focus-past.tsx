@@ -5,7 +5,7 @@ import {
   Project as ProjectType,
   isPastFocusPeriod
 } from '@/lib/types'
-import { formatDate } from '@/lib/utils'
+import { toDayString } from '@/lib/utils'
 import { useAtom } from 'jotai'
 import { FocusPeriodActions } from './period-actions'
 import { getFocusPeriodFullProjects } from '@/lib/use-projects'
@@ -31,7 +31,7 @@ const FocusPeriod = ({ period }: { period: FocusPeriodWithProjects }) => {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex justify-between text-sm font-bold text-slate-500">
-        {formatDate(period.periodStart)} - {formatDate(period.periodEnd)}
+        {toDayString(period.periodStart)} - {toDayString(period.periodEnd)}
         <FocusPeriodActions focusPeriodWithProjects={period} />
       </div>
 
