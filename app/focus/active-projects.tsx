@@ -32,7 +32,7 @@ export const ActiveProjects = () => {
   }
 
   return (
-    <section>
+    <section className="mt-[20vh] mb-[15vh] flex flex-col justify-center">
       <div className="flex flex-col gap-4">
         <h2 className="text-center text-4xl font-bold">Focus</h2>
         {activePeriods.length > 0 ? (
