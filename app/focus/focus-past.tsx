@@ -17,10 +17,10 @@ const Project = ({
 }: Pick<ProjectType & FocusPeriodType['projects'][0], 'focus' | 'color' | 'name'>) => {
   return (
     <div
-      className="relative flex gap-1 h-6 first:rounded-tl-full first:rounded-bl-full last:rounded-tr-full last:rounded-br-full items-center justify-center text-xs font-bold text-foreground select-none pointer-events-none"
+      className="relative flex gap-1 h-6 px-6 first:rounded-tl-full first:rounded-bl-full last:rounded-tr-full last:rounded-br-full items-center justify-center text-xs font-bold text-foreground truncate select-none pointer-events-none"
       style={{ width: `${focus}%`, backgroundColor: color }}
     >
-      {name}
+      <span className="truncate">{name}</span>
       <span className="opacity-50">{focus.toFixed(0)}</span>
     </div>
   )
@@ -31,7 +31,7 @@ const FocusPeriod = ({ period }: { period: FocusPeriodWithProjects }) => {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex justify-between text-sm font-bold text-slate-500">
-        {formatDate(period.periodStart)} - {period.periodEnd && formatDate(period.periodEnd)}
+        {formatDate(period.periodStart)} - {formatDate(period.periodEnd)}
         <FocusPeriodActions focusPeriodWithProjects={period} />
       </div>
 

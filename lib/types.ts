@@ -10,7 +10,7 @@ export type ActiveFocusPeriod = {
   id: string
   isActive?: boolean
   periodStart: string
-  periodEnd?: string
+  periodEnd: string
   projects: {
     projectId: string
     focus: number // 0-100

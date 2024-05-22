@@ -7,7 +7,7 @@ export const ProjectsPopover = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="xl">
+        <Button variant="outline" size="xl" className="h-12 aspect-square p-0 rounded-full">
           <PlusIcon className="w-4 h-4" />
         </Button>
       </PopoverTrigger>

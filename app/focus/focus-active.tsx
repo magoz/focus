@@ -3,12 +3,15 @@ import { focusPeriodsAtom } from '@/lib/local-state'
 import { FocusPeriodFullProject, FocusPeriodWithProjects } from '@/lib/types'
 import { useAtom } from 'jotai'
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels'
-import { FocusPeriodActions } from './period-actions'
 import { DateRange } from 'react-day-picker'
 import { ProjectsPopover } from './projects-popover'
 import { useHover } from '@uidotdev/usehooks'
 import { CheckIcon, XIcon } from 'lucide-react'
 import { createId } from '@paralleldrive/cuid2'
+import { add, isSameDay } from 'date-fns'
+import { formatDate } from '@/lib/utils'
+import { getNextFocusPeriod } from './utils'
+import { FocusPeriodDatePicker } from './period-date-picker'
 
 const Project = ({
   project,
@@ -42,20 +45,20 @@ const Project = ({
         id={id}
         defaultSize={focus}
         minSize={10}
-        className="relative flex h-12 first:rounded-tl-full first:rounded-bl-full last:rounded-tr-full last:rounded-br-full items-center justify-center"
+        className="relative flex h-10 first:rounded-tl-full first:rounded-bl-full last:rounded-tr-full last:rounded-br-full items-center justify-center"
         style={{ backgroundColor: color }}
       >
         <Button
           ref={ref}
           variant="icon"
           onClick={removeActiveProject}
-          className="flex gap-2 select-none text-foreground font-bold"
+          className="flex gap-2 select-none text-foreground font-bold truncate"
         >
           {hovering ? (
             <XIcon className="w-40 h-4" />
           ) : (
             <>
-              <span>{name}</span>
+              <span className="truncate">{name}</span>
               <span className="opacity-50">{focus.toFixed(0)}</span>
             </>
           )}
@@ -71,8 +74,8 @@ type Props = {
 }
 
 export const FocusActive = ({ focusPeriodProjects }: Props) => {
-  const { id, projects } = focusPeriodProjects
-  const [, setFocusPeriods] = useAtom(focusPeriodsAtom)
+  const { id, projects, periodStart, periodEnd } = focusPeriodProjects
+  const [periods, setFocusPeriods] = useAtom(focusPeriodsAtom)
 
   const setActiveProjectsFocus = (values: number[]) => {
     setFocusPeriods(prev => {
@@ -92,13 +95,15 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
   }
 
   const updateDates = (dates: DateRange | undefined) => {
+    console.log('dates', dates)
     setFocusPeriods(prev => {
       return prev.map(period => {
         if (period.id !== id) return period
+        const periodStart = dates?.from ? dates.from.toISOString() : new Date().toISOString()
         return {
           ...period,
-          periodStart: dates?.from ? dates.from.toISOString() : '',
-          periodEnd: dates?.to ? dates.to.toISOString() : undefined
+          periodStart,
+          periodEnd: dates?.to ? dates.to.toISOString() : periodStart
         }
       })
     })
@@ -110,7 +115,9 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
         ...prev,
         {
           id: createId(),
+          isActive: true,
           periodStart: new Date().toISOString(),
+          periodEnd: add(new Date(), { days: 7 }).toISOString(),
           projects: []
         }
       ]
@@ -119,6 +126,7 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
 
   const completeActiveFocus = () => {
     setFocusPeriods(prev => {
+      const { periodStart: nextPeriodStart, periodEnd: nextPeriodEnd } = getNextFocusPeriod(periods)
       return [
         ...prev.map(period => {
           if (period.id !== id) return period
@@ -130,35 +138,74 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
         {
           id: createId(),
           isActive: true,
-          periodStart: new Date().toISOString(),
+          periodStart: nextPeriodStart.toISOString(),
+          periodEnd: nextPeriodEnd.toISOString(),
           projects: []
         }
       ]
     })
   }
 
+  const isPeriodDaily = isSameDay(periodStart, periodEnd)
+
   return (
     <div>
-      <div className="w-full">
-        <PanelGroup
-          direction="horizontal"
-          onLayout={setActiveProjectsFocus}
-          // autoSaveId="active-panels"
-          // storage={panelGroupStorage}
-        >
-          {projects.map((project, index, arr) => {
-            const isLast = index === arr.length - 1
-            return <Project key={project.id} project={project} isLast={isLast} periodId={id} />
-          })}
-        </PanelGroup>
+      <div className="flex justify-center text-lg font-bold text-slate-500 mb-8">
+        {formatDate(periodStart)}
+        {!isPeriodDaily && ` - ${formatDate(periodEnd)}`}
       </div>
+
+      <div className="flex justify-center text-lg font-bold text-slate-500 mb-8">
+        <FocusPeriodDatePicker
+          from={new Date(periodStart)}
+          to={new Date(periodEnd)}
+          updateDates={updateDates}
+        />
+      </div>
+
+      <div className="flex w-full gap-4">
+        {/* {projects.length > 0 && ( */}
+        {/*   <Button */}
+        {/*     variant="outline" */}
+        {/*     size="xl" */}
+        {/*     onClick={completeActiveFocus} */}
+        {/*     className="aspect-square h-12 p-0 rounded-full" */}
+        {/*   > */}
+        {/*     <CheckIcon className="w-4 h-4" /> */}
+        {/*   </Button> */}
+        {/* )} */}
+
+        {projects.length > 0 ? (
+          <PanelGroup
+            direction="horizontal"
+            onLayout={setActiveProjectsFocus}
+            // autoSaveId="active-panels"
+            // storage={panelGroupStorage}
+          >
+            {projects.map((project, index, arr) => {
+              const isLast = index === arr.length - 1
+              return <Project key={project.id} project={project} isLast={isLast} periodId={id} />
+            })}
+          </PanelGroup>
+        ) : (
+          <div className="flex w-full h-10 border border-dashed border-foreground/30 rounded-full" />
+        )}
+
+        {/* <ProjectsPopover /> */}
+      </div>
+
       <div className="flex gap-4 w-full justify-center mt-8">
+        <ProjectsPopover />
         {projects.length > 0 && (
-          <Button variant="outline" size="xl" onClick={completeActiveFocus}>
+          <Button
+            variant="outline"
+            size="xl"
+            onClick={completeActiveFocus}
+            className="aspect-square h-12 p-0 rounded-full"
+          >
             <CheckIcon className="w-4 h-4" />
           </Button>
         )}
-        <ProjectsPopover />
       </div>
     </div>
   )

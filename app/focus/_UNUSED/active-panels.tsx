@@ -13,7 +13,7 @@ import {
 } from 'react-resizable-panels'
 
 export const ActiveFocus = () => {
-  const [projects] = useAtom(projectsAtom)
+  const [projects, _setProjects] = useAtom(projectsAtom)
   const [focusPeriods, setFocusPeriods] = useAtom(focusPeriodsAtom)
   const ref = useRef<ImperativePanelGroupHandle>(null)
 

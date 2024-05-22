@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { format } from 'date-fns'
+import { isSameDay } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import { DateRange } from 'react-day-picker'
 
@@ -32,14 +32,11 @@ export const FocusPeriodDatePicker = ({ from, to, updateDates, className }: Prop
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {from ? (
-              to ? (
-                <>
-                  {formatDate(from)} - {formatDate(to)}
-                </>
-              ) : (
-                format(from, 'LLL dd, y')
-              )
+            {from && to ? (
+              <>
+                {formatDate(from)}
+                {!isSameDay(from, to) && ` - ${formatDate(to)}`}
+              </>
             ) : (
               <span>Pick a date</span>
             )}
