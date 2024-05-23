@@ -30,7 +30,7 @@ const FocusPeriod = ({ period }: { period: FocusPeriodWithProjects }) => {
   const [projects] = useAtom(projectsAtom)
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex justify-between text-sm font-bold text-slate-500">
+      <div className="flex justify-between text-sm font-bold text-foreground/30">
         {`${formatDay(period.periodStart, { year: true })} - ${formatDay(period.periodEnd, { year: true })}`}
         <FocusPeriodActions focusPeriodWithProjects={period} />
       </div>

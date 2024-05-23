@@ -153,7 +153,7 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
 
   return (
     <div>
-      <div className="flex justify-center text-lg font-bold text-slate-500 mb-12">
+      <div className="flex justify-center text-lg font-bold text-foreground/50 mb-12">
         <FocusPeriodDatePicker
           from={new Date(periodStart)}
           to={new Date(periodEnd)}
