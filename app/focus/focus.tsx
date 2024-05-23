@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { ActiveProjects } from './active-projects'
 import { PastFocus } from './focus-past'
 import { ClientOnly } from '@/lib/client-only'

@@ -23,7 +23,7 @@ export const FocusPeriodDatePicker = ({ from, to, updateDates, className }: Prop
             id="date"
             variant={'outline'}
             className={cn(
-              'h-auto justify-start text-left border-none p-0 font-bold text-lg',
+              'h-auto justify-start text-left bg-transparent hover:bg-transparent border-none p-0 font-bold text-foreground/40 text-lg',
               noDate && 'text-muted-foreground'
             )}
           >
