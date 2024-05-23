@@ -12,7 +12,7 @@ export const ProjectsPopover = () => {
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent>
+      <PopoverContent side="bottom" avoidCollisions={false}>
         <ProjectList />
       </PopoverContent>
     </Popover>

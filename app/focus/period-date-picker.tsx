@@ -38,7 +38,7 @@ export const FocusPeriodDatePicker = ({ from, to, updateDates, className }: Prop
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0" align="center" side="bottom" avoidCollisions={false}>
           <Calendar
             initialFocus
             mode="range"
