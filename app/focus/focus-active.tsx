@@ -45,7 +45,7 @@ const Project = ({
         id={id}
         defaultSize={focus}
         minSize={10}
-        className="relative flex h-10 first:rounded-tl-full first:rounded-bl-full last:rounded-tr-full last:rounded-br-full items-center justify-center"
+        className="relative flex h-16 sm:h-10 first:rounded-tl-full first:rounded-bl-full last:rounded-tr-full last:rounded-br-full items-center justify-center"
         style={{ backgroundColor: color }}
       >
         <Button
@@ -64,7 +64,13 @@ const Project = ({
           )}
         </Button>
       </Panel>
-      {!isLast && <PanelResizeHandle className="w-0" />}
+      {!isLast && (
+        <PanelResizeHandle
+          // hitAreaMargins={{ coarse: 10, fine: 10 }}
+          className="w-[1px]"
+          style={{ backgroundColor: color }}
+        />
+      )}
     </>
   )
 }
