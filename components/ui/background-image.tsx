@@ -3,7 +3,7 @@ import bgImage from '@/public/bg.png'
 
 export const BackgroundImage = () => {
   return (
-    <div className="absolute w-full h-full bg-zinc-950 pointer-events-none z-[-1]">
+    <div className="fixed w-full h-screen bg-zinc-950 pointer-events-none z-[-1]">
       <Image
         src={bgImage}
         alt="Focus background image"
