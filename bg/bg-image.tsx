@@ -28,7 +28,7 @@ export const BgImage = () => {
   } = useFocus()
 
   return (
-    <div className="fixed w-full h-screen bg-zinc-950 pointer-events-none z-[-1]">
+    <div className="fixed w-full h-full bg-zinc-950 pointer-events-none z-[-1]">
       <Image
         key={backgoundImage}
         src={getBgImage(backgoundImage)}
