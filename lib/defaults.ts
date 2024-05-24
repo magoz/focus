@@ -1,4 +1,4 @@
-import { FocusPeriod, Project } from './types'
+import { FocusApp, Period, Project } from './types'
 
 export const colors = [
   '#009E49',
@@ -17,108 +17,120 @@ export const colors = [
   '#792D15'
 ]
 
-const pickRandom = <T>(array: T[]): T => {
-  const randomIndex = Math.floor(Math.random() * array.length)
-  const randomItem = array[randomIndex]
-  if (!randomItem) throw new Error('Array is empty')
-  return randomItem
-}
-
-export const pickRandomColor = () => pickRandom(colors)
-
 export const defaultProjects = [
   {
     id: '1',
-    name: 'Project 1',
-    color: colors[0]
+    name: 'Studio',
+    color: colors[0],
+    isArchived: false,
+    isDeleted: false
   },
   {
     id: '2',
-    name: 'Project 2',
-    color: colors[1]
+    name: 'Home',
+    color: colors[1],
+    isArchived: false,
+    isDeleted: false
   },
   {
     id: '3',
-    name: 'Project 3',
-    color: colors[8]
+    name: 'Secret Project',
+    color: colors[8],
+    isArchived: false,
+    isDeleted: false
   },
   {
     id: '4',
-    name: 'Project 4',
-    color: colors[3]
+    name: 'Admin',
+    color: colors[3],
+    isArchived: false,
+    isDeleted: false
   },
   {
     id: '5',
-    name: 'Project 5',
+    name: 'R&D',
     color: colors[4],
-    isArchived: true
+    isArchived: false,
+    isDeleted: false
   }
 ] satisfies Project[]
 
 export const defaultFocusPeriods = [
   {
     id: '1',
+    start: '2024-04-29',
+    end: '2024-05-06',
     isActive: true,
-    periodStart: '2024-04-29',
-    periodEnd: '2024-05-06',
     projects: [
       {
-        projectId: '3',
+        id: '3',
         focus: 90
       },
       {
-        projectId: '4',
+        id: '4',
         focus: 10
       }
     ]
   },
   {
     id: '2',
-    periodStart: '2024-05-06',
-    periodEnd: '2024-05-13',
+    start: '2024-05-06',
+    end: '2024-05-13',
+    isActive: false,
     projects: [
       {
-        projectId: '4',
+        id: '4',
         focus: 60
       },
       {
-        projectId: '1',
+        id: '1',
         focus: 10
       },
       {
-        projectId: '3',
+        id: '3',
         focus: 30
       }
     ]
   },
   {
     id: '3',
-    periodStart: '2024-05-13',
-    periodEnd: '2024-05-20',
+    start: '2024-05-13',
+    end: '2024-05-20',
+    isActive: false,
     projects: [
       {
-        projectId: '1',
+        id: '1',
         focus: 70
       },
       {
-        projectId: '2',
+        id: '2',
         focus: 30
       }
     ]
   },
   {
     id: '4',
-    periodStart: '2024-05-20',
-    periodEnd: '2024-05-27',
+    start: '2024-05-20',
+    end: '2024-05-27',
+    isActive: false,
     projects: [
       {
-        projectId: '3',
+        id: '3',
         focus: 50
       },
       {
-        projectId: '4',
+        id: '4',
         focus: 50
       }
     ]
   }
-] satisfies FocusPeriod[]
+] satisfies Period[]
+
+export const focusAppDefaults = {
+  projects: defaultProjects,
+  periods: defaultFocusPeriods,
+  settings: {
+    colors,
+    bgImage: 'sky'
+  }
+} satisfies FocusApp

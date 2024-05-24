@@ -1,10 +1,10 @@
-import { FocusPeriod } from '@/lib/types'
+import { Period } from '@/lib/types'
 import { addDays, differenceInDays, isPast } from 'date-fns'
 
 const DEFAULT_FOCUS_DURATION = 7
 
-export const getNextFocusPeriod = (periods: FocusPeriod[]) => {
-  const lastFocus = periods.toSorted((a, b) => b.periodStart.localeCompare(a.periodStart)).at(0)
+export const getNextFocusPeriod = (periods: Period[]) => {
+  const lastFocus = periods.toSorted((a, b) => b.start.localeCompare(a.end)).at(0)
   if (!lastFocus) {
     return {
       periodStart: new Date(),
@@ -12,13 +12,9 @@ export const getNextFocusPeriod = (periods: FocusPeriod[]) => {
     }
   }
 
-  const duration = differenceInDays(lastFocus.periodEnd, lastFocus.periodStart)
+  const duration = differenceInDays(lastFocus.start, lastFocus.end)
 
-  // TODO: extract day of the week start period
-
-  const nextPeriodStart = isPast(addDays(lastFocus.periodEnd, 1))
-    ? new Date()
-    : addDays(lastFocus.periodEnd, 1)
+  const nextPeriodStart = isPast(addDays(lastFocus.end, 1)) ? new Date() : addDays(lastFocus.end, 1)
 
   return {
     periodStart: nextPeriodStart,

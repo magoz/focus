@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+import { UpdateBgButton } from '../bg/update-bg-button'
 import { ActiveProjects } from './active-projects'
 import { PastFocus } from './focus-past'
 import { ClientOnly } from '@/lib/client-only'
@@ -17,6 +17,7 @@ export const Focus = () => {
           <PastFocus />
         </section>
       </main>
+      <UpdateBgButton />
     </ClientOnly>
   )
 }

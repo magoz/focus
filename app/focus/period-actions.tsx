@@ -1,7 +1,5 @@
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -15,27 +13,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { focusPeriodsAtom } from '@/lib/local-state'
-import { FocusPeriodWithProjects } from '@/lib/types'
-import { useAtom } from 'jotai'
+import { PeriodWithProjects } from '@/lib/types'
+import { useFocus } from '@/lib/use-focus'
 import { EllipsisIcon, Trash2Icon } from 'lucide-react'
 import { useState } from 'react'
 
 type Props = {
-  focusPeriodWithProjects: FocusPeriodWithProjects
+  focusPeriodWithProjects: PeriodWithProjects
 }
 
 export const FocusPeriodActions = ({ focusPeriodWithProjects }: Props) => {
   const [showMenu, setShowMenu] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const [, setFocusPeriods] = useAtom(focusPeriodsAtom)
+  const { deletePeriod } = useFocus()
   const { id } = focusPeriodWithProjects
-
-  const deleteFocusPeriod = () => {
-    setFocusPeriods(prev => {
-      return prev.filter(p => p.id !== id)
-    })
-  }
 
   return (
     <>
@@ -80,7 +71,12 @@ export const FocusPeriodActions = ({ focusPeriodWithProjects }: Props) => {
             >
               Cancel
             </Button>
-            <Button onClick={deleteFocusPeriod} className="w-1/2" size="xl" variant="destructive">
+            <Button
+              onClick={() => deletePeriod(id)}
+              className="w-1/2"
+              size="xl"
+              variant="destructive"
+            >
               Continue
             </Button>
           </AlertDialogFooter>

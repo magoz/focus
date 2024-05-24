@@ -1,20 +1,18 @@
-import { focusPeriodsAtom, projectsAtom } from '@/lib/local-state'
 import {
-  FocusPeriod as FocusPeriodType,
-  FocusPeriodWithProjects,
+  Period as PeriodType,
+  PeriodWithProjects,
   Project as ProjectType,
-  isPastFocusPeriod
+  isInactivePeriod
 } from '@/lib/types'
-import { formatDay, toDayString } from '@/lib/utils'
-import { useAtom } from 'jotai'
+import { formatDay } from '@/lib/utils'
 import { FocusPeriodActions } from './period-actions'
-import { getFocusPeriodFullProjects } from '@/lib/use-projects'
+import { useFocus } from '@/lib/use-focus'
 
 const Project = ({
   focus,
   color,
   name
-}: Pick<ProjectType & FocusPeriodType['projects'][0], 'focus' | 'color' | 'name'>) => {
+}: Pick<ProjectType & PeriodType['projects'][0], 'focus' | 'color' | 'name'>) => {
   return (
     <div
       className="relative flex gap-1 h-6 px-6 first:rounded-tl-full first:rounded-bl-full last:rounded-tr-full last:rounded-br-full items-center justify-center text-xs font-bold text-foreground truncate select-none pointer-events-none"
@@ -26,12 +24,12 @@ const Project = ({
   )
 }
 
-const FocusPeriod = ({ period }: { period: FocusPeriodWithProjects }) => {
-  const [projects] = useAtom(projectsAtom)
+const Period = ({ period }: { period: PeriodWithProjects }) => {
+  const { projects } = useFocus()
   return (
     <div className="flex flex-col gap-1">
       <div className="flex justify-between text-sm font-bold text-foreground/30">
-        {`${formatDay(period.periodStart, { year: true })} - ${formatDay(period.periodEnd, { year: true })}`}
+        {`${formatDay(period.start, { year: true })} - ${formatDay(period.end, { year: true })}`}
         <FocusPeriodActions focusPeriodWithProjects={period} />
       </div>
 
@@ -55,11 +53,10 @@ const getProject = (id: string, projects: ProjectType[]) => {
 }
 
 export const PastFocus = () => {
-  const [focusPeriods] = useAtom(focusPeriodsAtom)
-  const [projects] = useAtom(projectsAtom)
-  const pastFocus = focusPeriods
-    .filter(isPastFocusPeriod)
-    .toSorted((a, b) => b.periodStart.localeCompare(a.periodStart))
+  const { periods, getFocusPeriodFullProjects } = useFocus()
+  const pastFocus = periods
+    .filter(isInactivePeriod)
+    .toSorted((a, b) => b.start.localeCompare(a.end))
 
   return (
     <section className="">
@@ -67,8 +64,8 @@ export const PastFocus = () => {
 
       <div className="flex flex-col gap-8 w-full">
         {pastFocus.map(period => {
-          const periodWithFullProjects = getFocusPeriodFullProjects(projects, period)
-          return <FocusPeriod key={period.id} period={periodWithFullProjects} />
+          const periodWithFullProjects = getFocusPeriodFullProjects(period)
+          return <Period key={period.id} period={periodWithFullProjects} />
         })}
       </div>
     </section>

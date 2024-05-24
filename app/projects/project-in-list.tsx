@@ -1,9 +1,7 @@
 import { useRef, useState } from 'react'
-import { useAtom } from 'jotai'
-import { projectsAtom, focusPeriodsAtom } from '@/lib/local-state'
 import { Edit3Icon, ArchiveIcon, ArchiveRestoreIcon, Trash2Icon, EllipsisIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Project, isActiveFocusPeriod } from '@/lib/types'
+import { Project, isActivePeriod } from '@/lib/types'
 import { Input } from '@/components/ui/input'
 import {
   DropdownMenu,
@@ -16,7 +14,7 @@ import ColorPicker, { themes } from 'react-pick-color'
 import { Popover, PopoverContent } from '@/components/ui/popover'
 import { PopoverAnchor } from '@radix-ui/react-popover'
 import { colors } from '@/lib/defaults'
-import { isFuture } from 'date-fns'
+import { useFocus } from '@/lib/use-focus'
 
 type Props = {
   project: Project
@@ -24,8 +22,7 @@ type Props = {
 
 export const ProjectInList = ({ project }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null)
-  const [, setProjects] = useAtom(projectsAtom)
-  const [focusPeriods, setFocusPeriods] = useAtom(focusPeriodsAtom)
+  const { periods, updateProject, addProjectToPeriod } = useFocus()
   const [isRenaming, setIsRenaming] = useState(false)
   const [isRecoloring, setIsRecoloring] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
@@ -57,60 +54,6 @@ export const ProjectInList = ({ project }: Props) => {
 
   const toggleShowDeleteConfirmation = () => setShowDeleteConfirmation(prev => !prev)
 
-  const rename = (value: string) => {
-    setProjects(prev => {
-      return prev.map(project => {
-        return project.id === id ? { ...project, name: value } : project
-      })
-    })
-  }
-
-  const updateColor = (value: string) => {
-    setProjects(prev => {
-      return prev.map(project => {
-        return project.id === id ? { ...project, color: value } : project
-      })
-    })
-  }
-
-  const addProjectToFocusPeriod = () => {
-    const activePeriod = focusPeriods.filter(isActiveFocusPeriod).at(-1)
-    if (!activePeriod) return
-
-    setFocusPeriods(prev => {
-      return prev.map(period => {
-        if (activePeriod.id !== period.id) return period // Not the current period
-        if (period.projects.find(project => project.projectId === id)) return period // already added
-        return {
-          ...period,
-          projects: [
-            ...period.projects,
-            {
-              projectId: id,
-              focus: 50
-            }
-          ]
-        }
-      })
-    })
-  }
-
-  const toggleArchiveProject = () => {
-    setProjects(prev => {
-      return prev.map(project => {
-        return project.id === id ? { ...project, isArchived: !project.isArchived } : project
-      })
-    })
-  }
-
-  const deleteProject = () => {
-    setProjects(prev => {
-      return prev.map(project => {
-        return project.id === id ? { ...project, isDeleted: true } : project
-      })
-    })
-  }
-
   return (
     <div>
       <div
@@ -123,7 +66,7 @@ export const ProjectInList = ({ project }: Props) => {
             <Input
               ref={inputRef}
               value={name}
-              onChange={e => rename(e.currentTarget.value)}
+              onChange={e => updateProject({ id, name: e.currentTarget.value })}
               onBlur={() => toggleIsRenaming(false)}
               className="inline-flex w-full h-full items-center text-center font-bold text-base text-foreground bg-transparent  border-none focus:border-none"
             />
@@ -134,7 +77,11 @@ export const ProjectInList = ({ project }: Props) => {
                 isArchived ? 'disabled:cursor-default' : 'disabled:cursor-pointer'
               )}
               disabled={isArchived}
-              onClick={addProjectToFocusPeriod}
+              onClick={() => {
+                const activePeriod = periods.filter(isActivePeriod).at(-1) // No active period
+                if (!activePeriod) return
+                addProjectToPeriod({ projectId: id, periodId: activePeriod.id })
+              }}
             >
               {name}
             </Button>
@@ -155,7 +102,7 @@ export const ProjectInList = ({ project }: Props) => {
                 <div className="mr-2 w-4 h-4" style={{ backgroundColor: color }} />
                 <span>Change Color</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={toggleArchiveProject}>
+              <DropdownMenuItem onSelect={() => updateProject({ id, isArchived: !isArchived })}>
                 {isArchived ? (
                   <ArchiveRestoreIcon className="mr-2 w-4 h-4" />
                 ) : (
@@ -190,7 +137,7 @@ export const ProjectInList = ({ project }: Props) => {
           <ColorPicker
             theme={themes.dark}
             color={color}
-            onChange={color => updateColor(color.hex)}
+            onChange={color => updateProject({ id, color: color.hex })}
             hideAlpha
             presets={colors}
           />
@@ -206,7 +153,11 @@ export const ProjectInList = ({ project }: Props) => {
             <Button variant="outline" onClick={toggleShowDeleteConfirmation} className="w-1/2">
               Cancel
             </Button>
-            <Button variant="destructive" onClick={deleteProject} className="w-1/2">
+            <Button
+              variant="destructive"
+              onClick={() => updateProject({ id, isDeleted: true })}
+              className="w-1/2"
+            >
               Delete Project
             </Button>
           </div>

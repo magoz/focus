@@ -1,44 +1,76 @@
-export type Project = {
-  id: string
-  name: string
-  isArchived?: boolean
-  isDeleted?: boolean
-  color: string
-}
+import { z } from 'zod'
 
-export type ActiveFocusPeriod = {
-  id: string
-  isActive?: boolean
-  periodStart: string
-  periodEnd: string
-  projects: {
-    projectId: string
-    focus: number // 0-100
-  }[]
-}
-export type PastFocusPeriod = Required<ActiveFocusPeriod>
-export type FocusPeriod = ActiveFocusPeriod | PastFocusPeriod
+const ProjectSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  isArchived: z.boolean(),
+  isDeleted: z.boolean(),
+  color: z.string()
+})
+export type Project = z.infer<typeof ProjectSchema>
 
-export const isActiveFocusPeriod = (period: FocusPeriod): period is ActiveFocusPeriod => {
+const PeriodSchema = z.object({
+  id: z.string(),
+  start: z.string(),
+  end: z.string(),
+  isActive: z.boolean(),
+  projects: z
+    .object({
+      id: z.string(),
+      focus: z.number()
+    })
+    .array()
+})
+export type Period = z.infer<typeof PeriodSchema>
+
+const ActivePeriodSchema = PeriodSchema.omit({ isActive: true }).extend({
+  isActive: z.literal(true)
+})
+export type ActivePeriod = z.infer<typeof ActivePeriodSchema>
+
+const InactivePeriodSchema = PeriodSchema.omit({ isActive: true }).extend({
+  isActive: z.literal(false)
+})
+export type InactivePeriod = z.infer<typeof InactivePeriodSchema>
+
+export const isActivePeriod = (period: Period): period is ActivePeriod => {
   return period.isActive === true
 }
 
-export const isPastFocusPeriod = (period: FocusPeriod): period is PastFocusPeriod => {
+export const isInactivePeriod = (period: Period): period is InactivePeriod => {
   return !period.isActive
 }
 
-// export const isActiveFocusPeriod = (period: FocusPeriod): period is ActiveFocusPeriod => {
-//   return period.periodEnd === undefined || isFuture(new Date(period.periodEnd))
-// }
-//
-// export const isPastFocusPeriod = (period: FocusPeriod): period is PastFocusPeriod => {
-//   return period.periodEnd !== undefined && isPast(new Date(period.periodEnd))
-// }
+const BgImageSchema = z.union([
+  z.literal('sky'),
+  z.literal('space'),
+  z.literal('train'),
+  z.literal('flowers')
+])
+export const bgImageOptions = BgImageSchema.options.map(option => option._def.value)
+export type BgImage = z.infer<typeof BgImageSchema>
 
-export type FocusPeriodFullProject = Project & {
+const SettingsSchema = z.object({
+  colors: z.array(z.string()),
+  bgImage: BgImageSchema
+})
+export type Settings = z.infer<typeof SettingsSchema>
+
+export const FocusAppSchema = z.object({
+  projects: ProjectSchema.array(),
+  periods: PeriodSchema.array(),
+  settings: SettingsSchema
+})
+
+export type FocusApp = z.infer<typeof FocusAppSchema>
+
+/////////////////////////////////////
+/////////////////////////////////////
+
+export type ProjectWithFocus = Project & {
   focus: number // 0-100
 }
 
-export type FocusPeriodWithProjects = Omit<FocusPeriod, 'projects'> & {
-  projects: FocusPeriodFullProject[]
+export type PeriodWithProjects = Omit<Period, 'projects'> & {
+  projects: ProjectWithFocus[]
 }

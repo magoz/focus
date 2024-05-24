@@ -1,11 +1,10 @@
 'use client'
 
-import { projectsAtom } from '@/lib/local-state'
-import { useAtom } from 'jotai'
 import { ProjectInList } from './project-in-list'
+import { useFocus } from '@/lib/use-focus'
 
 export const ArchivedProjects = () => {
-  const [projects] = useAtom(projectsAtom)
+  const { projects } = useFocus()
   const archivedProjects = projects.filter(project => project.isArchived && !project.isDeleted)
 
   return (

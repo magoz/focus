@@ -1,42 +1,24 @@
 import { Button } from '@/components/ui/button'
-import { focusPeriodsAtom } from '@/lib/local-state'
-import { FocusPeriodFullProject, FocusPeriodWithProjects } from '@/lib/types'
-import { useAtom } from 'jotai'
+import { ProjectWithFocus, PeriodWithProjects } from '@/lib/types'
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels'
-import { DateRange } from 'react-day-picker'
 import { ProjectsPopover } from './projects-popover'
 import { useHover } from '@uidotdev/usehooks'
 import { CheckIcon, XIcon } from 'lucide-react'
-import { createId } from '@paralleldrive/cuid2'
-import { add } from 'date-fns'
-import { toDayString } from '@/lib/utils'
-import { getNextFocusPeriod } from './utils'
 import { FocusPeriodDatePicker } from './period-date-picker'
+import { useFocus } from '@/lib/use-focus'
 
 const Project = ({
   project,
   isLast,
   periodId
 }: {
-  project: FocusPeriodFullProject
+  project: ProjectWithFocus
   isLast: boolean
   periodId: string
 }) => {
-  const [, setFocusPeriods] = useAtom(focusPeriodsAtom)
+  const { removeProjectFromPeriod: removeActiveProject } = useFocus()
   const { id, name, focus, color } = project
   const [ref, hovering] = useHover()
-
-  const removeActiveProject = () => {
-    setFocusPeriods(prev => {
-      return prev.map(period => {
-        if (period.id !== periodId) return period
-        return {
-          ...period,
-          projects: period.projects.filter(p => p.projectId !== id)
-        }
-      })
-    })
-  }
 
   return (
     <>
@@ -51,7 +33,7 @@ const Project = ({
         <Button
           ref={ref}
           variant="icon"
-          onClick={removeActiveProject}
+          onClick={() => removeActiveProject({ periodId, projectId: id })}
           className="flex gap-2 select-none text-foreground font-bold truncate"
         >
           {hovering ? (
@@ -76,88 +58,25 @@ const Project = ({
 }
 
 type Props = {
-  focusPeriodProjects: FocusPeriodWithProjects
+  focusPeriodProjects: PeriodWithProjects
 }
 
 export const FocusActive = ({ focusPeriodProjects }: Props) => {
-  const { id, projects, periodStart, periodEnd } = focusPeriodProjects
-  const [periods, setFocusPeriods] = useAtom(focusPeriodsAtom)
-
-  const setActiveProjectsFocus = (values: number[]) => {
-    setFocusPeriods(prev => {
-      return prev.map(period => {
-        if (period.id !== id) return period
-        return {
-          ...period,
-          projects: period.projects.map((project, i) => {
-            return {
-              ...project,
-              focus: values[i]
-            }
-          })
-        }
-      })
-    })
-  }
-
-  const updateDates = (dates: DateRange | undefined) => {
-    setFocusPeriods(prev => {
-      return prev.map(period => {
-        if (period.id !== id) return period
-        const periodStart = dates?.from ? toDayString(dates.from) : toDayString(new Date())
-        return {
-          ...period,
-          periodStart,
-          periodEnd: dates?.to ? toDayString(dates.to) : periodStart
-        }
-      })
-    })
-  }
-
-  const addFocusPeriod = () => {
-    setFocusPeriods(prev => {
-      return [
-        ...prev,
-        {
-          id: createId(),
-          isActive: true,
-          periodStart: toDayString(new Date()),
-          periodEnd: toDayString(add(new Date(), { days: 7 })),
-          projects: []
-        }
-      ]
-    })
-  }
+  const { id, projects, start, end } = focusPeriodProjects
+  const { updateActivePeriodFocus, createPeriod, updatePeriod, updatePeriodDates } = useFocus()
 
   const completeActiveFocus = () => {
-    setFocusPeriods(prev => {
-      const { periodStart: nextPeriodStart, periodEnd: nextPeriodEnd } = getNextFocusPeriod(periods)
-      return [
-        ...prev.map(period => {
-          if (period.id !== id) return period
-          return {
-            ...period,
-            isActive: false
-          }
-        }),
-        {
-          id: createId(),
-          isActive: true,
-          periodStart: toDayString(nextPeriodStart),
-          periodEnd: toDayString(nextPeriodEnd),
-          projects: []
-        }
-      ]
-    })
+    updatePeriod({ id, isActive: false })
+    createPeriod()
   }
 
   return (
     <div>
       <div className="flex justify-center text-lg font-bold text-foreground/50 mb-12">
         <FocusPeriodDatePicker
-          from={new Date(periodStart)}
-          to={new Date(periodEnd)}
-          updateDates={updateDates}
+          from={new Date(start)}
+          to={new Date(end)}
+          updateDates={dates => updatePeriodDates({ periodId: id, dates })}
         />
       </div>
       <div className="flex w-full gap-4">
@@ -175,7 +94,7 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
         {projects.length > 0 ? (
           <PanelGroup
             direction="horizontal"
-            onLayout={setActiveProjectsFocus}
+            onLayout={values => updateActivePeriodFocus({ periodId: id, values })}
             // autoSaveId="active-panels"
             // storage={panelGroupStorage}
           >

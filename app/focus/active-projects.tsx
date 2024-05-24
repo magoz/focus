@@ -1,35 +1,14 @@
 'use client'
 
-import { focusPeriodsAtom, projectsAtom } from '@/lib/local-state'
-import { useAtom } from 'jotai'
 import { FocusActive } from './focus-active'
-import { getFocusPeriodFullProjects } from '@/lib/use-projects'
-import { createId } from '@paralleldrive/cuid2'
-import { isActiveFocusPeriod } from '@/lib/types'
 import { PlusIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { add } from 'date-fns'
-import { toDayString } from '@/lib/utils'
+import { useFocus } from '@/lib/use-focus'
+import { isActivePeriod } from '@/lib/types'
 
 export const ActiveProjects = () => {
-  const [projects] = useAtom(projectsAtom)
-  const [focusPeriods, setFocusPeriods] = useAtom(focusPeriodsAtom)
-
-  const activePeriods = focusPeriods.filter(isActiveFocusPeriod)
-
-  const addFocusPeriod = () => {
-    setFocusPeriods(prev => {
-      return [
-        ...prev,
-        {
-          id: createId(),
-          periodStart: toDayString(new Date()),
-          periodEnd: toDayString(add(new Date(), { days: 7 })),
-          projects: []
-        }
-      ]
-    })
-  }
+  const { periods, getFocusPeriodFullProjects } = useFocus()
+  const activePeriods = periods.filter(isActivePeriod)
 
   return (
     <section className="mt-[20vh] mb-[15vh] flex flex-col justify-center">
@@ -38,7 +17,7 @@ export const ActiveProjects = () => {
         {activePeriods.length > 0 ? (
           <>
             {activePeriods.map(period => {
-              const activeFocusWithProjects = getFocusPeriodFullProjects(projects, period)
+              const activeFocusWithProjects = getFocusPeriodFullProjects(period)
               return <FocusActive key={period.id} focusPeriodProjects={activeFocusWithProjects} />
             })}
           </>

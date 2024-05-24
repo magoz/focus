@@ -1,14 +1,7 @@
 import { atomWithStorage } from 'jotai/utils'
-import { defaultFocusPeriods, defaultProjects } from './defaults'
-import { FocusPeriod, Project } from './types'
+import { focusAppDefaults } from './defaults'
+import { FocusApp } from './types'
 
-export const projectsAtom = atomWithStorage<Project[]>('projects', defaultProjects, undefined, {
+export const focusAtom = atomWithStorage<FocusApp>('focus', focusAppDefaults, undefined, {
   getOnInit: true
 })
-
-export const focusPeriodsAtom = atomWithStorage<FocusPeriod[]>(
-  'focus-periods',
-  defaultFocusPeriods,
-  undefined,
-  { getOnInit: true }
-)

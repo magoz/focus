@@ -2,7 +2,7 @@
 
 import { Input } from '@/components/ui/input'
 import { Project } from '@/lib/types'
-import { useEditProject } from '@/lib/use-projects'
+import { useFocus } from '@/lib/use-focus'
 import { useState } from 'react'
 
 type Props = {
@@ -12,22 +12,15 @@ type Props = {
 export const EditProject = ({ project }: Props) => {
   const [inputName, setInputName] = useState(project.name)
   const [inputColor, setInputColor] = useState(project.color)
-  const { editProject } = useEditProject()
-
-  const onEdit = () => {
-    editProject({
-      ...project,
-      name: inputName,
-      color: inputColor
-    })
-  }
+  const { updateProject } = useFocus()
+  const { id } = project
 
   const onEditColor = (value: string) => {
     setInputColor(value)
     if (value === '') return
 
-    editProject({
-      ...project,
+    updateProject({
+      id,
       color: value
     })
   }
@@ -36,8 +29,8 @@ export const EditProject = ({ project }: Props) => {
     setInputName(value)
     if (value === '') return
 
-    editProject({
-      ...project,
+    updateProject({
+      id,
       name: value
     })
   }
