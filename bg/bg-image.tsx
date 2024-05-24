@@ -24,21 +24,39 @@ const getBgImage = (image: BgImageType) => {
 
 export const BgImage = () => {
   const {
-    settings: { bgImage: backgoundImage }
+    settings: { bgImage }
   } = useFocus()
 
   return (
-    <div className="fixed w-full h-full bg-zinc-950 blur-lg pointer-events-none z-[-1]">
+    <div className="fixed w-full h-full bg-zinc-950 pointer-events-none z-[-1]">
       <Image
-        key={backgoundImage}
-        src={getBgImage(backgoundImage)}
+        key={bgImage}
+        src={getBgImage(bgImage)}
         alt="Focus background image"
         className={cn(
-          'w-full h-full opacity-60 object-cover',
-          backgoundImage === 'sky' ? 'object-bottom' : 'object-center'
+          'w-full h-full object-cover',
+          bgImage === 'sky' ? 'object-bottom' : 'object-center',
+          'opacity-60 blur-lg'
         )}
         priority={false}
       />
     </div>
   )
 }
+
+// export const BgImage = () => {
+//   const {
+//     settings: { bgImage }
+//   } = useFocus()
+//
+//   return (
+//     <div
+//       className={cn(
+//         'fixed w-full h-full bg-zinc-950 pointer-events-none z-[-1] bg-cover bg-no-repeat',
+//         bgImage === 'sky' ? 'bg-bottom' : 'bg-center',
+//         'opacity-60 blur-lg'
+//       )}
+//       style={{ backgroundImage: `url(/${bgImage}.jpg)` }}
+//     ></div>
+//   )
+// }
