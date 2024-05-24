@@ -28,15 +28,14 @@ export const BgImage = () => {
   } = useFocus()
 
   return (
-    <div className="fixed w-full h-full bg-zinc-950 pointer-events-none z-[-1]">
+    <div className="fixed w-full h-full bg-zinc-950 blur-lg pointer-events-none z-[-1]">
       <Image
         key={backgoundImage}
         src={getBgImage(backgoundImage)}
         alt="Focus background image"
         className={cn(
-          'w-full h-full object-cover',
-          backgoundImage === 'sky' ? 'object-bottom' : 'object-center',
-          'opacity-60 blur-lg'
+          'w-full h-full opacity-60 object-cover',
+          backgoundImage === 'sky' ? 'object-bottom' : 'object-center'
         )}
         priority={false}
       />
