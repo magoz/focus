@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { BgImage } from '@/bg/bg-image'
+import { BgImage } from '@/app/_bg/bg-image'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} relative`} suppressHydrationWarning>
         <BgImage />
-        <main className="relative z-auto">{children}</main>
+        <main className="relative">{children}</main>
       </body>
     </html>
   )
