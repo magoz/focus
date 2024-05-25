@@ -12,7 +12,7 @@ export const getNextFocusPeriod = (periods: Period[]) => {
     }
   }
 
-  const duration = differenceInDays(lastFocus.start, lastFocus.end)
+  const duration = differenceInDays(lastFocus.end, lastFocus.start)
 
   const nextPeriodStart = isPast(addDays(lastFocus.end, 1)) ? new Date() : addDays(lastFocus.end, 1)
 
