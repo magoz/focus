@@ -56,13 +56,15 @@ export const FocusPeriodActions = ({ focusPeriodWithProjects }: Props) => {
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent className="p-12">
           <AlertDialogHeader>
-            <AlertDialogTitle className=" mb-4 text-3xl text-center">You Sure?</AlertDialogTitle>
+            <AlertDialogTitle className=" mb-4 text-3xl text-center">
+              Delete Period?
+            </AlertDialogTitle>
             <AlertDialogDescription className="text-lg text-center">
               You will lose focus 🙃 <br />
               This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex gap-4 mt-4">
+          <AlertDialogFooter className="flex gap-4 mt-6">
             <Button
               className="w-1/2"
               variant="outline"
@@ -77,7 +79,7 @@ export const FocusPeriodActions = ({ focusPeriodWithProjects }: Props) => {
               size="xl"
               variant="destructive"
             >
-              Continue
+              Delete
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
