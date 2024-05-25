@@ -62,8 +62,8 @@ type Props = {
 }
 
 export const FocusActive = ({ focusPeriodProjects }: Props) => {
-  const { id, projects, start, end } = focusPeriodProjects
-  const { updateActivePeriodFocus, createPeriod, updatePeriod, updatePeriodDates } = useFocus()
+  const { id, projects } = focusPeriodProjects
+  const { updateActivePeriodFocus, createPeriod, updatePeriod } = useFocus()
 
   const completeActiveFocus = () => {
     updatePeriod({ id, isActive: false })
@@ -73,14 +73,7 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
   return (
     <div>
       <div className="flex justify-center text-lg font-bold text-foreground/50 mb-12">
-        <FocusPeriodDatePicker
-          from={new Date(start)}
-          to={new Date(end)}
-          updateDates={dates => {
-            console.log('dates', dates)
-            updatePeriodDates({ periodId: id, dates })
-          }}
-        />
+        <FocusPeriodDatePicker periodId={id} />
       </div>
       <div className="flex w-full gap-4">
         {/* {projects.length > 0 && ( */}

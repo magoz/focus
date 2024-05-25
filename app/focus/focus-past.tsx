@@ -54,7 +54,7 @@ const getProject = (id: string, projects: ProjectType[]) => {
 }
 
 export const PastFocus = () => {
-  const { periods, getFocusPeriodFullProjects } = useFocus()
+  const { periods, getPeriodWithProjects: getFocusPeriodFullProjects } = useFocus()
   const pastFocus = periods
     .filter(isInactivePeriod)
     .toSorted((a, b) => b.start.localeCompare(a.end))

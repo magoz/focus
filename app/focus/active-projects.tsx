@@ -7,7 +7,7 @@ import { useFocus } from '@/lib/use-focus'
 import { isActivePeriod } from '@/lib/types'
 
 export const ActiveProjects = () => {
-  const { periods, getFocusPeriodFullProjects } = useFocus()
+  const { periods, getPeriodWithProjects } = useFocus()
   const activePeriods = periods.filter(isActivePeriod)
 
   return (
@@ -17,7 +17,7 @@ export const ActiveProjects = () => {
         {activePeriods.length > 0 ? (
           <>
             {activePeriods.map(period => {
-              const activeFocusWithProjects = getFocusPeriodFullProjects(period)
+              const activeFocusWithProjects = getPeriodWithProjects(period)
               return <FocusActive key={period.id} focusPeriodProjects={activeFocusWithProjects} />
             })}
           </>

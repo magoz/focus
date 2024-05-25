@@ -8,6 +8,7 @@ import { DateRange } from 'react-day-picker'
 import { pickRandom, pickRandomColor, toDayString } from './utils'
 import { createId } from '@paralleldrive/cuid2'
 import { getNextFocusPeriod } from '@/app/focus/utils'
+import { addDays } from 'date-fns'
 
 export const useFocus = () => {
   const [{ projects, periods, settings }, setFocus] = useAtom(focusAtom)
@@ -56,6 +57,32 @@ export const useFocus = () => {
   ////////////////////////////////////
   // PERIODS
   ////////////////////////////////////
+
+  const getPeriod = useCallback(
+    (id: string) => {
+      return periods.find(p => p.id === id)
+    },
+    [periods]
+  )
+
+  const getPeriodWithProjects = useCallback(
+    (period: Period): PeriodWithProjects => {
+      const activeProjects = period.projects.map(project => {
+        const existingProject = projects.find(p => p.id === project.id)
+        if (!existingProject) throw new Error(`Project with id ${project.id} not found`)
+        return {
+          ...existingProject,
+          focus: project.focus
+        } satisfies ProjectWithFocus
+      })
+
+      return {
+        ...period,
+        projects: activeProjects
+      }
+    },
+    [projects]
+  )
 
   const createPeriod = useCallback(() => {
     setFocus(prev => {
@@ -109,26 +136,6 @@ export const useFocus = () => {
                   focus: values[i]
                 }
               })
-            }
-          })
-        }
-      })
-    },
-    [setFocus]
-  )
-
-  const updatePeriodDates = useCallback(
-    ({ periodId, dates }: { periodId: string; dates: DateRange | undefined }) => {
-      setFocus(prev => {
-        return {
-          ...prev,
-          periods: prev.periods.map(period => {
-            if (period.id !== periodId) return period
-            const startDay = dates?.from ? toDayString(dates.from) : toDayString(new Date())
-            return {
-              ...period,
-              start: startDay,
-              end: dates?.to ? toDayString(dates.to) : startDay
             }
           })
         }
@@ -192,25 +199,6 @@ export const useFocus = () => {
     [setFocus]
   )
 
-  const getFocusPeriodFullProjects = useCallback(
-    (period: Period): PeriodWithProjects => {
-      const activeProjects = period.projects.map(project => {
-        const existingProject = projects.find(p => p.id === project.id)
-        if (!existingProject) throw new Error(`Project with id ${project.id} not found`)
-        return {
-          ...existingProject,
-          focus: project.focus
-        } satisfies ProjectWithFocus
-      })
-
-      return {
-        ...period,
-        projects: activeProjects
-      }
-    },
-    [projects]
-  )
-
   // GETTERS
 
   const updateBackgroundImage = useCallback(() => {
@@ -229,13 +217,13 @@ export const useFocus = () => {
     projects,
     periods,
     settings,
-    getFocusPeriodFullProjects,
     createProject,
     updateProject,
+    getPeriod,
+    getPeriodWithProjects,
     createPeriod,
     updatePeriod,
     updateActivePeriodFocus,
-    updatePeriodDates,
     addProjectToPeriod,
     removeProjectFromPeriod,
     deletePeriod,
