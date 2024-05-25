@@ -17,10 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className} suppressHydrationWarning>
+      <body className={`${inter.className} relative`} suppressHydrationWarning>
         <BgImage />
-
-        {children}
+        <main className="relative z-auto">{children}</main>
       </body>
     </html>
   )

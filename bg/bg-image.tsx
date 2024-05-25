@@ -22,41 +22,48 @@ const getBgImage = (image: BgImageType) => {
   }
 }
 
-export const BgImage = () => {
-  const {
-    settings: { bgImage }
-  } = useFocus()
-
-  return (
-    <div className="fixed w-full h-full bg-zinc-950 pointer-events-none z-[-1]">
-      <Image
-        key={bgImage}
-        src={getBgImage(bgImage)}
-        alt="Focus background image"
-        className={cn(
-          'w-full h-full object-cover',
-          bgImage === 'sky' ? 'object-bottom' : 'object-center',
-          'opacity-60 blur-lg'
-        )}
-        priority={false}
-      />
-    </div>
-  )
-}
-
 // export const BgImage = () => {
 //   const {
 //     settings: { bgImage }
 //   } = useFocus()
 //
 //   return (
-//     <div
-//       className={cn(
-//         'fixed w-full h-full bg-zinc-950 pointer-events-none z-[-1] bg-cover bg-no-repeat',
-//         bgImage === 'sky' ? 'bg-bottom' : 'bg-center',
-//         'opacity-60 blur-lg'
-//       )}
-//       style={{ backgroundImage: `url(/${bgImage}.jpg)` }}
-//     ></div>
+//     <div className="fixed top-0 left-0 w-full h-full bg-zinc-950 pointer-events-none">
+//       <Image
+//         key={bgImage}
+//         src={bgTrain}
+//         alt="Focus background image"
+//         className="w-full h-auto object-cover object-center"
+//         quality={100}
+//         // className="w-full h-full object-cover opacity-60 blur-lg"
+//         // className={cn(
+//         //   'w-full h-full object-cover opacity-60 blur-lg'
+//         //   // bgImage === 'sky' ? 'object-bottom' : 'object-center',
+//         //   // 'opacity-10 blur-lg'
+//         // )}
+//       />
+//     </div>
 //   )
 // }
+
+export const BgImage = () => {
+  const {
+    settings: { bgImage }
+  } = useFocus()
+
+  return (
+    <div className="fixed top-0 left-0 h-full w-full bg-zinc-950">
+      <div
+        className="fixed top-0 left-0 w-full h-full"
+        style={{
+          backgroundImage: `url(/${bgImage}.jpg)`,
+          backgroundPosition: bgImage === 'sky' ? '50% bottom' : '50% center',
+          backgroundSize: 'cover',
+          opacity: '0.6',
+          filter: 'blur(16px)'
+          // zIndex: -10
+        }}
+      />
+    </div>
+  )
+}
