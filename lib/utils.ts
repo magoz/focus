@@ -1,5 +1,5 @@
 import { type ClassValue, clsx } from 'clsx'
-import { format, startOfDay } from 'date-fns'
+import { format, isSameDay, isSameYear, isThisYear, startOfDay } from 'date-fns'
 import { twMerge } from 'tailwind-merge'
 import { colors } from './defaults'
 import { bgImageOptions } from './types'
@@ -16,6 +16,12 @@ export const toDayString = (date: string | Date) => {
   const dateWithoutTime = startOfDay(new Date(date))
   const string = format(dateWithoutTime, 'yyyy-MM-dd')
   return string
+}
+
+export const formatDateRange = (from: string | Date, to: string | Date) => {
+  const formattedFrom = formatDay(from, { year: !isThisYear(from) })
+  const formattedTo = !isSameDay(from, to) ? ` - ${formatDay(to, { year: !isThisYear(to) })}` : ''
+  return `${formattedFrom}${formattedTo}`
 }
 
 export const pickRandom = <T>(array: T[]): T => {

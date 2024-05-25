@@ -76,7 +76,10 @@ export const FocusActive = ({ focusPeriodProjects }: Props) => {
         <FocusPeriodDatePicker
           from={new Date(start)}
           to={new Date(end)}
-          updateDates={dates => updatePeriodDates({ periodId: id, dates })}
+          updateDates={dates => {
+            console.log('dates', dates)
+            updatePeriodDates({ periodId: id, dates })
+          }}
         />
       </div>
       <div className="flex w-full gap-4">

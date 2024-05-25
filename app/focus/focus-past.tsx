@@ -4,7 +4,7 @@ import {
   Project as ProjectType,
   isInactivePeriod
 } from '@/lib/types'
-import { formatDay } from '@/lib/utils'
+import { formatDateRange } from '@/lib/utils'
 import { FocusPeriodActions } from './period-actions'
 import { useFocus } from '@/lib/use-focus'
 
@@ -29,7 +29,8 @@ const Period = ({ period }: { period: PeriodWithProjects }) => {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex justify-between text-sm font-bold text-foreground/30">
-        {`${formatDay(period.start, { year: true })} - ${formatDay(period.end, { year: true })}`}
+        {formatDateRange(period.start, period.end)}
+
         <FocusPeriodActions focusPeriodWithProjects={period} />
       </div>
 

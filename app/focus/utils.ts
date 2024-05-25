@@ -7,8 +7,8 @@ export const getNextFocusPeriod = (periods: Period[]) => {
   const lastFocus = periods.toSorted((a, b) => b.start.localeCompare(a.end)).at(0)
   if (!lastFocus) {
     return {
-      periodStart: new Date(),
-      periodEnd: addDays(new Date(), DEFAULT_FOCUS_DURATION)
+      start: new Date(),
+      end: addDays(new Date(), DEFAULT_FOCUS_DURATION)
     }
   }
 
@@ -17,7 +17,7 @@ export const getNextFocusPeriod = (periods: Period[]) => {
   const nextPeriodStart = isPast(addDays(lastFocus.end, 1)) ? new Date() : addDays(lastFocus.end, 1)
 
   return {
-    periodStart: nextPeriodStart,
-    periodEnd: addDays(nextPeriodStart, duration)
+    start: nextPeriodStart,
+    end: addDays(nextPeriodStart, duration)
   }
 }

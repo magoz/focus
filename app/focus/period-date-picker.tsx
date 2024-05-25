@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { isSameDay } from 'date-fns'
 import { DateRange } from 'react-day-picker'
 
-import { cn, formatDay } from '@/lib/utils'
+import { cn, formatDateRange } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -27,15 +26,7 @@ export const FocusPeriodDatePicker = ({ from, to, updateDates, className }: Prop
               noDate && 'text-muted-foreground'
             )}
           >
-            {/* <CalendarIcon className="mr-2 h-4 w-4" /> */}
-            {from && to ? (
-              <>
-                {formatDay(from)}
-                {!isSameDay(from, to) && ` - ${formatDay(to)}`}
-              </>
-            ) : (
-              <span>Pick a date</span>
-            )}
+            {from && to ? <>{formatDateRange(from, to)}</> : <span>Pick a date</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="center" side="bottom" avoidCollisions={false}>

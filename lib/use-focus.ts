@@ -59,7 +59,7 @@ export const useFocus = () => {
 
   const createPeriod = useCallback(() => {
     setFocus(prev => {
-      const { periodStart: nextPeriodStart, periodEnd: nextPeriodEnd } = getNextFocusPeriod(periods)
+      const { start: nextStart, end: nextEnd } = getNextFocusPeriod(periods)
       return {
         ...prev,
         periods: [
@@ -67,8 +67,8 @@ export const useFocus = () => {
           {
             id: createId(),
             isActive: true,
-            start: toDayString(nextPeriodStart),
-            end: toDayString(nextPeriodEnd),
+            start: toDayString(nextStart),
+            end: toDayString(nextEnd),
             projects: []
           }
         ]
@@ -124,11 +124,11 @@ export const useFocus = () => {
           ...prev,
           periods: prev.periods.map(period => {
             if (period.id !== periodId) return period
-            const periodStart = dates?.from ? toDayString(dates.from) : toDayString(new Date())
+            const startDay = dates?.from ? toDayString(dates.from) : toDayString(new Date())
             return {
               ...period,
-              periodStart,
-              periodEnd: dates?.to ? toDayString(dates.to) : periodStart
+              start: startDay,
+              end: dates?.to ? toDayString(dates.to) : startDay
             }
           })
         }
