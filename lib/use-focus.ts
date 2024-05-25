@@ -1,3 +1,5 @@
+'use client'
+
 import { useAtom } from 'jotai'
 import { focusAtom } from './local-state'
 import { useCallback } from 'react'
@@ -75,7 +77,7 @@ export const useFocus = () => {
   }, [setFocus, periods])
 
   const updatePeriod = useCallback(
-    ({ id, ...newPeriodData }: Partial<Period> & { id: Period['id'] }) => {
+    ({ id, ...updatedData }: Partial<Period> & { id: Period['id'] }) => {
       setFocus(prev => {
         return {
           ...prev,
@@ -83,7 +85,7 @@ export const useFocus = () => {
             if (period.id !== id) return period
             return {
               ...period,
-              newPeriodData
+              ...updatedData
             }
           })
         }
