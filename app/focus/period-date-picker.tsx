@@ -44,7 +44,7 @@ export const FocusPeriodDatePicker = ({ periodId, className }: Props) => {
             {formatDateRange(start, end)}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="center" side="bottom" avoidCollisions={false}>
+        <PopoverContent className="w-auto p-2" align="center" side="bottom" avoidCollisions={false}>
           <Calendar
             initialFocus
             mode="range"

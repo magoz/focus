@@ -4,11 +4,9 @@ import { useAtom } from 'jotai'
 import { focusAtom } from './local-state'
 import { useCallback } from 'react'
 import { ProjectWithFocus, PeriodWithProjects, Period, Project, bgImageOptions } from './types'
-import { DateRange } from 'react-day-picker'
 import { pickRandom, pickRandomColor, toDayString } from './utils'
 import { createId } from '@paralleldrive/cuid2'
 import { getNextFocusPeriod } from '@/app/focus/utils'
-import { addDays } from 'date-fns'
 
 export const useFocus = () => {
   const [{ projects, periods, settings }, setFocus] = useAtom(focusAtom)
