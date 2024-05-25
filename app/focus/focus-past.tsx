@@ -54,7 +54,7 @@ const getProject = (id: string, projects: ProjectType[]) => {
 }
 
 export const PastFocus = () => {
-  const { periods, getPeriodWithProjects: getFocusPeriodFullProjects } = useFocus()
+  const { periods, getPeriodWithProjects } = useFocus()
   const pastFocus = periods
     .filter(isInactivePeriod)
     .toSorted((a, b) => b.start.localeCompare(a.end))
@@ -65,7 +65,7 @@ export const PastFocus = () => {
 
       <div className="flex flex-col gap-8 w-full">
         {pastFocus.map(period => {
-          const periodWithFullProjects = getFocusPeriodFullProjects(period)
+          const periodWithFullProjects = getPeriodWithProjects(period)
           return <Period key={period.id} period={periodWithFullProjects} />
         })}
       </div>
