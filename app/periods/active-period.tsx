@@ -76,17 +76,6 @@ export const ActivePeriod = ({ focusPeriodProjects }: Props) => {
         <FocusPeriodDatePicker periodId={id} />
       </div>
       <div className="flex w-full gap-4">
-        {/* {projects.length > 0 && ( */}
-        {/*   <Button */}
-        {/*     variant="outline" */}
-        {/*     size="xl" */}
-        {/*     onClick={completeActiveFocus} */}
-        {/*     className="aspect-square h-12 p-0 rounded-full" */}
-        {/*   > */}
-        {/*     <CheckIcon className="w-4 h-4" /> */}
-        {/*   </Button> */}
-        {/* )} */}
-
         {projects.length > 0 ? (
           <PanelGroup
             direction="horizontal"
@@ -102,21 +91,18 @@ export const ActivePeriod = ({ focusPeriodProjects }: Props) => {
         ) : (
           <div className="flex w-full h-10 border border-dashed border-foreground/30 rounded-full" />
         )}
-
-        {/* <ProjectsPopover /> */}
       </div>
       <div className="flex gap-4 w-full justify-center mt-8">
         <ProjectsPopover />
-        {projects.length > 0 && (
-          <Button
-            variant="outline"
-            size="xl"
-            onClick={completeActiveFocus}
-            className="aspect-square h-12 p-0 rounded-full"
-          >
-            <CheckIcon className="w-4 h-4" />
-          </Button>
-        )}
+        <Button
+          variant="outline"
+          size="xl"
+          onClick={completeActiveFocus}
+          disabled={projects.length === 0}
+          className="aspect-square h-12 p-0 rounded-full hover:bg-background"
+        >
+          <CheckIcon className="w-4 h-4" />
+        </Button>
       </div>
     </div>
   )
