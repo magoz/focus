@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { PeriodWithProjects } from '@/lib/types'
 import { useFocus } from '@/lib/use-focus'
-import { EllipsisIcon, Trash2Icon } from 'lucide-react'
+import { CircleDotIcon, EllipsisIcon, Trash2Icon } from 'lucide-react'
 import { useState } from 'react'
 
 type Props = {
@@ -25,7 +25,7 @@ type Props = {
 export const FocusPeriodActions = ({ focusPeriodWithProjects }: Props) => {
   const [showMenu, setShowMenu] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const { deletePeriod } = useFocus()
+  const { deletePeriod, focusPeriod } = useFocus()
   const { id } = focusPeriodWithProjects
 
   return (
@@ -36,16 +36,10 @@ export const FocusPeriodActions = ({ focusPeriodWithProjects }: Props) => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent onCloseAutoFocus={e => e.preventDefault()}>
-          {/* <DropdownMenuItem onSelect={toggleArchiveProject}> */}
-          {/*   {isArchived ? ( */}
-          {/*     <ArchiveRestoreIcon className="mr-2 w-4 h-4" /> */}
-          {/*   ) : ( */}
-          {/*     <ArchiveIcon className="mr-2 w-4 h-4" /> */}
-          {/*   )} */}
-          {/**/}
-          {/*   <span>{isArchived ? 'Unarchive' : 'Archive'} </span> */}
-          {/* </DropdownMenuItem> */}
-
+          <DropdownMenuItem onSelect={() => focusPeriod(id)}>
+            <CircleDotIcon className="mr-2 h-4 w-4" />
+            <span>Focus</span>
+          </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => setShowDeleteDialog(true)}>
             <Trash2Icon className="mr-2 h-4 w-4" />
             <span>Delete</span>

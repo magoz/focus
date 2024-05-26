@@ -119,6 +119,28 @@ export const useFocus = () => {
     [setFocus]
   )
 
+  const focusPeriod = useCallback(
+    (id: string) => {
+      setFocus(prev => {
+        return {
+          ...prev,
+          periods: prev.periods.flatMap(period => {
+            if (period.id !== id) {
+              if (period.projects.length === 0) return [] // we don't want to keep empty periods
+
+              return { ...period, isActive: false }
+            }
+            return {
+              ...period,
+              isActive: true
+            }
+          })
+        }
+      })
+    },
+    [setFocus]
+  )
+
   const updateActivePeriodFocus = useCallback(
     ({ periodId, values }: { periodId: string; values: number[] }) => {
       setFocus(prev => {
@@ -221,6 +243,7 @@ export const useFocus = () => {
     getPeriodWithProjects,
     createPeriod,
     updatePeriod,
+    focusPeriod,
     updateActivePeriodFocus,
     addProjectToPeriod,
     removeProjectFromPeriod,
