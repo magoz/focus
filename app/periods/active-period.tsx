@@ -61,7 +61,7 @@ type Props = {
   focusPeriodProjects: PeriodWithProjects
 }
 
-export const FocusActive = ({ focusPeriodProjects }: Props) => {
+export const ActivePeriod = ({ focusPeriodProjects }: Props) => {
   const { id, projects } = focusPeriodProjects
   const { updateActivePeriodFocus, createPeriod, updatePeriod } = useFocus()
 

@@ -53,7 +53,7 @@ const getProject = (id: string, projects: ProjectType[]) => {
   return project
 }
 
-export const PastFocus = () => {
+export const PastPeriods = () => {
   const { periods, getPeriodWithProjects } = useFocus()
   const pastFocus = periods
     .filter(isInactivePeriod)

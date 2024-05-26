@@ -1,12 +1,12 @@
 'use client'
 
-import { FocusActive } from './focus-active'
+import { ActivePeriod } from './active-period'
 import { PlusIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useFocus } from '@/lib/use-focus'
 import { isActivePeriod } from '@/lib/types'
 
-export const ActiveProjects = () => {
+export const ActivePeriods = () => {
   const { periods, getPeriodWithProjects } = useFocus()
   const activePeriods = periods.filter(isActivePeriod)
 
@@ -18,7 +18,7 @@ export const ActiveProjects = () => {
           <>
             {activePeriods.map(period => {
               const activeFocusWithProjects = getPeriodWithProjects(period)
-              return <FocusActive key={period.id} focusPeriodProjects={activeFocusWithProjects} />
+              return <ActivePeriod key={period.id} focusPeriodProjects={activeFocusWithProjects} />
             })}
           </>
         ) : (

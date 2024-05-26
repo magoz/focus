@@ -6,7 +6,7 @@ import { useCallback } from 'react'
 import { ProjectWithFocus, PeriodWithProjects, Period, Project, bgImageOptions } from './types'
 import { pickRandom, pickRandomColor, toDayString } from './utils'
 import { createId } from '@paralleldrive/cuid2'
-import { getNextFocusPeriod } from '@/app/focus/utils'
+import { getNextFocusPeriod } from '@/app/periods/utils'
 
 export const useFocus = () => {
   const [{ projects, periods, settings }, setFocus] = useAtom(focusAtom)
