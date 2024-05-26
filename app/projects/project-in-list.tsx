@@ -38,15 +38,16 @@ export const ProjectInList = ({ project }: Props) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const { id, color, name, isArchived } = project
 
-  const toggleIsRenaming = (value?: boolean) => {
+  const toggleIsRenaming = (value: boolean) => {
+    setIsRenaming(value)
+
+    if (!value) return
     setShowMenu(false)
-    setIsRenaming(prev => (value !== undefined ? value : !prev))
     setTimeout(() => {
       if (inputRef.current) {
         inputRef.current.focus()
-        inputRef.current.select()
       }
-    }, 150) // wait for the dropdownmenu to handle focus. Not ideal. Should be a better way
+    }, 200) // wait for the dropdownmenu to handle focus. Not ideal. Should be a better way
   }
 
   const openRecoloring = () => {
@@ -55,10 +56,6 @@ export const ProjectInList = ({ project }: Props) => {
       setIsRecoloring(true)
     }, 200) // wait for the dropdownmenu to handle focus. Not ideal. Should be a better way
   }
-
-  // useEffect(() => {
-  //   if (isRenaming) inputRef.current?.focus()
-  // }, [isRenaming])
 
   const toggleShowDeleteConfirmation = () => setShowDeleteDialog(prev => !prev)
 
@@ -96,9 +93,9 @@ export const ProjectInList = ({ project }: Props) => {
           )}
         </div>
 
-        <div className="absolute top-3 right-4 flex items-center gap-2">
+        <div className="absolute top-0 right-0 flex items-center gap-2">
           <DropdownMenu open={showMenu} onOpenChange={setShowMenu} modal={false}>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger className="flex justify-center items-center h-12 w-14">
               <EllipsisIcon className="w-6 h-6" />
             </DropdownMenuTrigger>
             <DropdownMenuContent onCloseAutoFocus={e => e.preventDefault()}>
