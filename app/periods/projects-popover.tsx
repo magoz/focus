@@ -2,6 +2,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ProjectList } from '../projects/list'
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
+import { ArchivedProjects } from '../projects/archived'
 
 export const ProjectsPopover = () => {
   return (
@@ -18,6 +19,7 @@ export const ProjectsPopover = () => {
 
       <PopoverContent side="bottom" avoidCollisions={false}>
         <ProjectList />
+        <ArchivedProjects />
       </PopoverContent>
     </Popover>
   )

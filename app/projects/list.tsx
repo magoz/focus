@@ -11,10 +11,10 @@ export const ProjectList = () => {
 
   return (
     <section>
-      <div className="flex gap-4 items-center mb-4 select-none">
+      <div className="flex gap-2 items-center justify-center mb-4 select-none">
         <h3 className="text-2xl font-bold">Projects</h3>
         <Button variant="link" onClick={createProject} className="p-0">
-          <PlusIcon className="w-4 h-4" />
+          <PlusIcon className="w-5 h-5" />
         </Button>
       </div>
       <div className="flex flex-col gap-4">

@@ -66,7 +66,7 @@ export const ProjectInList = ({ project }: Props) => {
     <div>
       <div
         key={id}
-        className="relative flex w-full h-16 rounded-xl items-center justify-center cursor-pointer"
+        className="relative flex w-full h-12 rounded-full items-center justify-center cursor-pointer"
         style={{ backgroundColor: color }}
       >
         <div className="w-full h-full">
@@ -96,7 +96,7 @@ export const ProjectInList = ({ project }: Props) => {
           )}
         </div>
 
-        <div className="absolute top-2 right-3 flex items-center gap-2">
+        <div className="absolute top-3 right-4 flex items-center gap-2">
           <DropdownMenu open={showMenu} onOpenChange={setShowMenu} modal={false}>
             <DropdownMenuTrigger>
               <EllipsisIcon className="w-6 h-6" />

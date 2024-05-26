@@ -7,9 +7,11 @@ export const ArchivedProjects = () => {
   const { projects } = useFocus()
   const archivedProjects = projects.filter(project => project.isArchived && !project.isDeleted)
 
+  if (archivedProjects.length === 0) return null
+
   return (
-    <section>
-      <div className="flex gap-4 items-center mb-4 select-none">
+    <section className="mt-6">
+      <div className="flex gap-4 items-center justify-center mb-4 select-none">
         <h3 className="text-2xl font-bold">Archived</h3>
       </div>
 
