@@ -15,6 +15,14 @@ import { Popover, PopoverContent } from '@/components/ui/popover'
 import { PopoverAnchor } from '@radix-ui/react-popover'
 import { colors } from '@/lib/defaults'
 import { useFocus } from '@/lib/use-focus'
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
 
 type Props = {
   project: Project
@@ -27,7 +35,7 @@ export const ProjectInList = ({ project }: Props) => {
   const [isRecoloring, setIsRecoloring] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
 
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const { id, color, name, isArchived } = project
 
   const toggleIsRenaming = (value?: boolean) => {
@@ -52,7 +60,7 @@ export const ProjectInList = ({ project }: Props) => {
   //   if (isRenaming) inputRef.current?.focus()
   // }, [isRenaming])
 
-  const toggleShowDeleteConfirmation = () => setShowDeleteConfirmation(prev => !prev)
+  const toggleShowDeleteConfirmation = () => setShowDeleteDialog(prev => !prev)
 
   return (
     <div>
@@ -99,7 +107,7 @@ export const ProjectInList = ({ project }: Props) => {
                 <span>Rename</span>
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={() => openRecoloring()}>
-                <div className="mr-2 w-4 h-4" style={{ backgroundColor: color }} />
+                <div className="mr-2 w-4 h-4 rounded-full" style={{ backgroundColor: color }} />
                 <span>Change Color</span>
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={() => updateProject({ id, isArchived: !isArchived })}>
@@ -119,12 +127,37 @@ export const ProjectInList = ({ project }: Props) => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* <input */}
-          {/*   type="color" */}
-          {/*   value={color} */}
-          {/*   onChange={e => updateColor(e.target.value)} */}
-          {/*   className="min-w-1 w-4 min-h-1 h-4" */}
-          {/* /> */}
+          <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+            <AlertDialogContent className="p-12">
+              <AlertDialogHeader>
+                <AlertDialogTitle className=" mb-4 text-3xl text-center">
+                  Delete Project?
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-lg text-center">
+                  Past Focus using this project will be preserved. <br />
+                  This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter className="flex gap-4 mt-6">
+                <Button
+                  className="w-1/2"
+                  variant="outline"
+                  size="xl"
+                  onClick={() => setShowDeleteDialog(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => updateProject({ id, isDeleted: true })}
+                  className="w-1/2"
+                  size="xl"
+                  variant="destructive"
+                >
+                  Delete
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 
@@ -143,26 +176,6 @@ export const ProjectInList = ({ project }: Props) => {
           />
         </PopoverContent>
       </Popover>
-
-      {/* {editing && <EditProject project={project} />} */}
-
-      {showDeleteConfirmation && (
-        <>
-          <div className="text-center mt-2 mb-2">You sure?</div>
-          <div className="flex gap-2 mb-2">
-            <Button variant="outline" onClick={toggleShowDeleteConfirmation} className="w-1/2">
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => updateProject({ id, isDeleted: true })}
-              className="w-1/2"
-            >
-              Delete Project
-            </Button>
-          </div>
-        </>
-      )}
     </div>
   )
 }

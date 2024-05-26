@@ -57,7 +57,7 @@ export const FocusPeriodActions = ({ focusPeriodWithProjects }: Props) => {
         <AlertDialogContent className="p-12">
           <AlertDialogHeader>
             <AlertDialogTitle className=" mb-4 text-3xl text-center">
-              Delete Period?
+              Delete Focus Period?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-lg text-center">
               You will lose focus 🙃 <br />
