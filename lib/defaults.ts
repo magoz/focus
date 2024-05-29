@@ -1,4 +1,5 @@
 import { FocusApp, Period, Project } from './types'
+import { getCurrentUTCTimestamp } from './utils'
 
 export const colors = [
   '#009E49',
@@ -126,11 +127,14 @@ export const defaultFocusPeriods = [
   }
 ] satisfies Period[]
 
-export const focusAppDefaults = {
-  projects: defaultProjects,
-  periods: defaultFocusPeriods,
-  settings: {
-    colors,
-    bgImage: 'sky'
-  }
-} satisfies FocusApp
+export const getAppDefaults = () => {
+  return {
+    lastEdit: getCurrentUTCTimestamp(),
+    projects: defaultProjects,
+    periods: defaultFocusPeriods,
+    settings: {
+      colors,
+      bgImage: 'sky'
+    }
+  } satisfies FocusApp
+}

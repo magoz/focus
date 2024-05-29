@@ -59,7 +59,8 @@ export type Settings = z.infer<typeof SettingsSchema>
 export const FocusAppSchema = z.object({
   projects: ProjectSchema.array(),
   periods: PeriodSchema.array(),
-  settings: SettingsSchema
+  settings: SettingsSchema,
+  lastEdit: z.string()
 })
 
 export type FocusApp = z.infer<typeof FocusAppSchema>

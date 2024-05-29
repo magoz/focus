@@ -1,7 +1,7 @@
 import { atomWithStorage } from 'jotai/utils'
-import { focusAppDefaults } from './defaults'
+import { getAppDefaults } from './defaults'
 import { FocusApp } from './types'
 
-export const focusAtom = atomWithStorage<FocusApp>('focus', focusAppDefaults, undefined, {
+export const focusAtom = atomWithStorage<FocusApp>('focus', getAppDefaults(), undefined, {
   getOnInit: true
 })

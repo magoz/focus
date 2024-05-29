@@ -4,21 +4,23 @@ import { useAtom } from 'jotai'
 import { focusAtom } from './local-state'
 import { useCallback } from 'react'
 import { ProjectWithFocus, PeriodWithProjects, Period, Project, bgImageOptions } from './types'
-import { pickRandom, pickRandomColor, toDayString } from './utils'
+import { getCurrentUTCTimestamp, pickRandom, pickRandomColor, toDayString } from './utils'
 import { createId } from '@paralleldrive/cuid2'
 import { getNextFocusPeriod } from '@/app/periods/utils'
 
 export const useFocus = () => {
-  const [{ projects, periods, settings }, setFocus] = useAtom(focusAtom)
+  const [appData, setAppData] = useAtom(focusAtom)
+  const { projects, periods, settings } = appData
 
   ////////////////////////////////////
   // PROJECTS
   ////////////////////////////////////
 
-  const createProject = useCallback(() => {
-    setFocus(prev => {
+  const createProject = useCallback(async () => {
+    setAppData(prev => {
       return {
         ...prev,
+        lastEdit: getCurrentUTCTimestamp(),
         projects: [
           ...prev.projects,
           {
@@ -31,13 +33,14 @@ export const useFocus = () => {
         ]
       }
     })
-  }, [setFocus])
+  }, [setAppData])
 
   const updateProject = useCallback(
     ({ id, ...updatedData }: Partial<Project> & { id: Project['id'] }) => {
-      setFocus(prev => {
+      setAppData(prev => {
         return {
           ...prev,
+          lastEdit: getCurrentUTCTimestamp(),
           projects: prev.projects.map(p =>
             p.id === id
               ? {
@@ -49,7 +52,7 @@ export const useFocus = () => {
         }
       })
     },
-    [setFocus]
+    [setAppData]
   )
 
   ////////////////////////////////////
@@ -83,10 +86,11 @@ export const useFocus = () => {
   )
 
   const createPeriod = useCallback(() => {
-    setFocus(prev => {
+    setAppData(prev => {
       const { start: nextStart, end: nextEnd } = getNextFocusPeriod(periods)
       return {
         ...prev,
+        lastEdit: getCurrentUTCTimestamp(),
         periods: [
           ...prev.periods,
           {
@@ -99,13 +103,14 @@ export const useFocus = () => {
         ]
       }
     })
-  }, [setFocus, periods])
+  }, [setAppData, periods])
 
   const updatePeriod = useCallback(
     ({ id, ...updatedData }: Partial<Period> & { id: Period['id'] }) => {
-      setFocus(prev => {
+      setAppData(prev => {
         return {
           ...prev,
+          lastEdit: getCurrentUTCTimestamp(),
           periods: prev.periods.map(period => {
             if (period.id !== id) return period
             return {
@@ -116,14 +121,15 @@ export const useFocus = () => {
         }
       })
     },
-    [setFocus]
+    [setAppData]
   )
 
   const focusPeriod = useCallback(
     (id: string) => {
-      setFocus(prev => {
+      setAppData(prev => {
         return {
           ...prev,
+          lastEdit: getCurrentUTCTimestamp(),
           periods: prev.periods.flatMap(period => {
             if (period.id !== id) {
               if (period.projects.length === 0) return [] // we don't want to keep empty periods
@@ -138,14 +144,15 @@ export const useFocus = () => {
         }
       })
     },
-    [setFocus]
+    [setAppData]
   )
 
   const updateActivePeriodFocus = useCallback(
     ({ periodId, values }: { periodId: string; values: number[] }) => {
-      setFocus(prev => {
+      setAppData(prev => {
         return {
           ...prev,
+          lastEdit: getCurrentUTCTimestamp(),
           periods: prev.periods.map(period => {
             if (period.id !== periodId) return period
             return {
@@ -161,14 +168,15 @@ export const useFocus = () => {
         }
       })
     },
-    [setFocus]
+    [setAppData]
   )
 
   const addProjectToPeriod = useCallback(
     ({ projectId, periodId }: { projectId: string; periodId: string }) => {
-      setFocus(prev => {
+      setAppData(prev => {
         return {
           ...prev,
+          lastEdit: getCurrentUTCTimestamp(),
           periods: prev.periods.map(period => {
             if (period.id !== periodId) return period // Not the current period
             if (period.projects.find(project => project.id === projectId)) return period // already added
@@ -186,14 +194,15 @@ export const useFocus = () => {
         }
       })
     },
-    [setFocus]
+    [setAppData]
   )
 
   const removeProjectFromPeriod = useCallback(
     ({ projectId, periodId }: { projectId: string; periodId: string }) => {
-      setFocus(prev => {
+      setAppData(prev => {
         return {
           ...prev,
+          lastEdit: getCurrentUTCTimestamp(),
           periods: prev.periods.map(period => {
             if (period.id !== periodId) return period
             return {
@@ -204,36 +213,40 @@ export const useFocus = () => {
         }
       })
     },
-    [setFocus]
+    [setAppData]
   )
 
   const deletePeriod = useCallback(
     (id: string) => {
-      setFocus(prev => {
+      setAppData(prev => {
         return {
           ...prev,
+          lastEdit: getCurrentUTCTimestamp(),
           periods: prev.periods.filter(p => p.id !== id)
         }
       })
     },
-    [setFocus]
+    [setAppData]
   )
 
   // GETTERS
 
   const updateBackgroundImage = useCallback(() => {
-    setFocus(prev => {
+    setAppData(prev => {
       return {
         ...prev,
+        lastEdit: getCurrentUTCTimestamp(),
         settings: {
           ...prev.settings,
           bgImage: pickRandom(bgImageOptions.filter(option => option !== prev.settings.bgImage))
         }
       }
     })
-  }, [setFocus])
+  }, [setAppData])
 
   return {
+    appData,
+    setAppData,
     projects,
     periods,
     settings,

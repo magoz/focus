@@ -2,10 +2,12 @@ import { Button } from '@/components/ui/button'
 import { ProjectWithFocus, PeriodWithProjects } from '@/lib/types'
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels'
 import { ProjectsPopover } from './projects-popover'
-import { useHover } from '@uidotdev/usehooks'
+import { useDebounce, useHover } from '@uidotdev/usehooks'
 import { CheckIcon, XIcon } from 'lucide-react'
 import { FocusPeriodDatePicker } from './period-date-picker'
 import { useFocus } from '@/lib/use-focus'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { isEqual } from 'lodash'
 
 const Project = ({
   project,
@@ -16,7 +18,7 @@ const Project = ({
   isLast: boolean
   periodId: string
 }) => {
-  const { removeProjectFromPeriod: removeActiveProject } = useFocus()
+  const { removeProjectFromPeriod } = useFocus()
   const { id, name, focus, color } = project
   const [ref, hovering] = useHover()
 
@@ -33,7 +35,7 @@ const Project = ({
         <Button
           ref={ref}
           variant="icon"
-          onClick={() => removeActiveProject({ periodId, projectId: id })}
+          onClick={() => removeProjectFromPeriod({ periodId, projectId: id })}
           className="flex gap-2 select-none text-foreground font-bold truncate"
         >
           {hovering ? (
@@ -63,12 +65,41 @@ type Props = {
 
 export const ActivePeriod = ({ focusPeriodProjects }: Props) => {
   const { id, projects } = focusPeriodProjects
+  const [localFocusValues, setLocalFocusValues] = useState<number[]>(
+    focusPeriodProjects.projects.map(p => p.focus)
+  )
+  const debouncedFocusValues = useDebounce(localFocusValues, 300)
+  const panelGroupHasChangedRef = useRef(false)
   const { updateActivePeriodFocus, createPeriod, updatePeriod } = useFocus()
 
-  const completeActiveFocus = () => {
+  const completeActiveFocus = useCallback(() => {
     updatePeriod({ id, isActive: false })
     createPeriod()
-  }
+  }, [id, updatePeriod, createPeriod])
+
+  const updateAppFocusValues = useCallback(() => {
+    updateActivePeriodFocus({ periodId: id, values: debouncedFocusValues })
+  }, [id, debouncedFocusValues, updateActivePeriodFocus])
+
+  useEffect(() => {
+    if (!panelGroupHasChangedRef.current) return
+    updateAppFocusValues()
+  }, [debouncedFocusValues, updateAppFocusValues])
+
+  const handleLayoutChange = useCallback(
+    (values: number[]) => {
+      // We don't want to trigger an update if the values are the same.
+      // Especially we want to avoid triggering an update on load, which onLayout does.
+      // So we only update if the values are different.
+      if (isEqual(localFocusValues, values)) return
+
+      // We also track if the panelGroup has changed, so we can avoid triggering an update
+      panelGroupHasChangedRef.current = true
+
+      setLocalFocusValues(() => values)
+    },
+    [localFocusValues]
+  )
 
   return (
     <div>
@@ -79,13 +110,28 @@ export const ActivePeriod = ({ focusPeriodProjects }: Props) => {
         {projects.length > 0 ? (
           <PanelGroup
             direction="horizontal"
-            onLayout={values => updateActivePeriodFocus({ periodId: id, values })}
+            onLayout={handleLayoutChange}
             // autoSaveId="active-panels"
             // storage={panelGroupStorage}
           >
             {projects.map((project, index, arr) => {
               const isLast = index === arr.length - 1
-              return <Project key={project.id} project={project} isLast={isLast} periodId={id} />
+
+              // There is a race between the panelGroup and the focus values
+              // We need to make sure that the focus value is not undefined
+              // Otherwise we get the error:
+              // `Cannot update a component while rendering a different component`
+              const focus = localFocusValues[index] ?? 50
+
+              const projectWithLocalFocus = { ...project, focus }
+              return (
+                <Project
+                  key={project.id}
+                  project={projectWithLocalFocus}
+                  isLast={isLast}
+                  periodId={id}
+                />
+              )
             })}
           </PanelGroup>
         ) : (

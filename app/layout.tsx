@@ -1,3 +1,4 @@
+import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
@@ -16,11 +17,21 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} relative`} suppressHydrationWarning>
-        <BgImage />
-        <main className="relative">{children}</main>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body className={`${inter.className} relative`} suppressHydrationWarning>
+          <BgImage />
+          <main className="relative">{children}</main>
+          <div className="fixed bottom-0 left-0 z-20 ">
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

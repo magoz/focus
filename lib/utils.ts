@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from 'clsx'
-import { format, isSameDay, isSameYear, isThisYear, startOfDay } from 'date-fns'
+import { format, formatISO, isSameDay, isThisYear, startOfDay } from 'date-fns'
+import { UTCDate } from '@date-fns/utc'
 import { twMerge } from 'tailwind-merge'
 import { colors } from './defaults'
 import { bgImageOptions } from './types'
@@ -33,3 +34,5 @@ export const pickRandom = <T>(array: T[]): T => {
 
 export const pickRandomColor = () => pickRandom(colors)
 export const pickRandomBackgroundImage = () => pickRandom(bgImageOptions)
+
+export const getCurrentUTCTimestamp = () => formatISO(new UTCDate())
